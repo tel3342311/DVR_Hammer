@@ -2,10 +2,11 @@ package com.example.trdcmacpro.dvr_hammer.util;
 
 public class Def {
 
-    public final static String DVR_Url = "http://192.168.10.1/";
+    public final static String DVR_Url = "http://192.168.10.1/%s";
     //camera setting
     public final static String camera_setting = "camera.shtml";
     public final static String camera_cgi = "cgi-bin/camera.cgi";
+    public final static
     //preview or storage mode
     public final static String system_setting = "system.shtml";
     public final static String system_cgi = "cgi-bin/system.cgi";
