@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.trdcmacpro.dvr_hammer.ItemFragment.OnListFragmentInteractionListener;
@@ -30,6 +31,7 @@ public class VideoItemRecyclerViewAdapter extends RecyclerView.Adapter<VideoItem
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_item, parent, false);
+
         return new ViewHolder(view);
     }
 

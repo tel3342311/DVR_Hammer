@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "/Users/trdcmacpro/AndroidStudioProjects/DVR_Hammer/simplemjpegview/build/intermediates/res/merged/debug/layout/main.xml",
+        "source": "/Users/trdcmacpro/AndroidStudioProjects/DVR_Hammer/simplemjpegview/src/main/res/layout/main.xml"
+    },
+    {
+        "merged": "/Users/trdcmacpro/AndroidStudioProjects/DVR_Hammer/simplemjpegview/build/intermediates/res/merged/debug/layout/option_menu.xml",
+        "source": "/Users/trdcmacpro/AndroidStudioProjects/DVR_Hammer/simplemjpegview/src/main/res/layout/option_menu.xml"
+    },
+    {
+        "merged": "/Users/trdcmacpro/AndroidStudioProjects/DVR_Hammer/simplemjpegview/build/intermediates/res/merged/debug/layout/settings.xml",
+        "source": "/Users/trdcmacpro/AndroidStudioProjects/DVR_Hammer/simplemjpegview/src/main/res/layout/settings.xml"
+    }
+]
