@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.camera.simplemjpeg.MjpegInputStream;
+import com.camera.simplemjpeg.MjpegView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,8 +60,14 @@ public class PreviewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_preview, container, false);
+
+        String URL = "http://192.168.10.1:8081/?action=stream";
+        View view = inflater.inflate(R.layout.fragment_preview, container, false);
+        MjpegView mv = (MjpegView) view.findViewById(R.id.preview);
+        mv.setSource(MjpegInputStream.read(URL));
+        mv.setDisplayMode(MjpegView.SIZE_BEST_FIT);
+        mv.showFps(true);
+        return view;
     }
 
 }

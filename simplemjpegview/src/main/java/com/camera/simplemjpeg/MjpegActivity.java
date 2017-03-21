@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -77,12 +79,19 @@ public class MjpegActivity extends Activity {
         sb.append(ip_command);
         URL = new String(sb);
 
-        setContentView(R.layout.main);
-        mv = (MjpegView) findViewById(R.id.mv);
-        if (mv != null) {
-            mv.setResolution(width, height);
-        }
+        String URL = "http://192.168.10.1:8081/?action=stream";
 
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //WakeLockManager.getInstance().createWakeLock(this, CLASS);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        mv = new MjpegView(this);
+        setContentView(mv);
+
+        mv.setSource(MjpegInputStream.read(URL));
+        mv.setDisplayMode(MjpegView.SIZE_BEST_FIT);
+        mv.showFps(true);
         setTitle(R.string.title_connecting);
         new DoRead().execute(URL);
     }
@@ -109,10 +118,10 @@ public class MjpegActivity extends Activity {
         if (DEBUG) Log.d(TAG, "onPause()");
         super.onPause();
         if (mv != null) {
-            if (mv.isStreaming()) {
-                mv.stopPlayback();
-                suspending = true;
-            }
+//            if (mv.isStreaming()) {
+//                mv.stopPlayback();
+//                suspending = true;
+//            }
         }
     }
 
@@ -125,7 +134,7 @@ public class MjpegActivity extends Activity {
         if (DEBUG) Log.d(TAG, "onDestroy()");
 
         if (mv != null) {
-            mv.freeCameraMemory();
+//            mv.freeCameraMemory();
         }
 
         super.onDestroy();
@@ -171,7 +180,7 @@ public class MjpegActivity extends Activity {
                     ip_command = data.getStringExtra("ip_command");
 
                     if (mv != null) {
-                        mv.setResolution(width, height);
+//                        mv.setResolution(width, height);
                     }
                     SharedPreferences preferences = getSharedPreferences("SAVED_VALUES", MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
@@ -244,8 +253,8 @@ public class MjpegActivity extends Activity {
             } else {
                 setTitle(R.string.title_disconnected);
             }
-            mv.setDisplayMode(MjpegView.SIZE_BEST_FIT);
-            mv.showFps(false);
+            mv.setDisplayMode(MjpegView.SIZE_FULLSCREEN);
+            mv.showFps(true);
         }
     }
 

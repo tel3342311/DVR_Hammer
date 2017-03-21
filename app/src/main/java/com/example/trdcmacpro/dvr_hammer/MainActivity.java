@@ -8,7 +8,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 
+import com.camera.simplemjpeg.MjpegInputStream;
+import com.camera.simplemjpeg.MjpegView;
 import com.example.trdcmacpro.dvr_hammer.dummy.DummyContent;
 
 public class MainActivity extends AppCompatActivity implements ItemFragment.OnListFragmentInteractionListener {
@@ -38,11 +42,19 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        String URL = "http://192.168.10.1:8081/?action=stream";
 
-        setFragment(PreviewFragment.newInstance("",""));
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        MjpegView mv = new MjpegView(this);
+        setContentView(mv);
+
+        mv.setSource(MjpegInputStream.read(URL));
+        mv.setDisplayMode(MjpegView.SIZE_BEST_FIT);
+        mv.showFps(true);
+        //setContentView(R.layout.activity_main);
+
+        //setFragment(PreviewFragment.newInstance("",""));
+        //BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        //navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
     protected void setFragment(Fragment fragment) {
