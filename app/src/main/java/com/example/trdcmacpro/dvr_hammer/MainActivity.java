@@ -42,19 +42,11 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String URL = "http://192.168.10.1:8081/?action=stream";
+        setContentView(R.layout.activity_main);
 
-        MjpegView mv = new MjpegView(this);
-        setContentView(mv);
-
-        mv.setSource(MjpegInputStream.read(URL));
-        mv.setDisplayMode(MjpegView.SIZE_BEST_FIT);
-        mv.showFps(true);
-        //setContentView(R.layout.activity_main);
-
-        //setFragment(PreviewFragment.newInstance("",""));
-        //BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        //navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        setFragment(PreviewFragment.newInstance("",""));
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
     protected void setFragment(Fragment fragment) {

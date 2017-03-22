@@ -44,6 +44,7 @@ public class Def {
     public final static String RECORDING_CHANNEL = "listbox_resolution";
     public final static String LIVE_CHANNEL = "listbox_capture";
     //wireless
+    public final static String KEY_PAGE_BASIC = "basic";
     public final static String WLAN_CONF = "wlan_conf";
     public final static String WIRELESSMODE = "wirelessmode";
     public final static String MSSID_0 = "mssid_0";
@@ -85,6 +86,72 @@ public class Def {
     public final static String VHT_LDPC = "vht_ldpc";
     public final static String TX_STREAM = "tx_stream";
     public final static String RX_STREAM = "rx_stream";
-
-
+    //internet
+    public final static String KEY_PAGE_WAN   = "wan";
+    public final static String CONNECTIONTYPE = "connectiontype";
+    public final static String STATICIP       = "staticip";
+    public final static String STATICNETMASK  = "staticnetmask";
+    public final static String STATICGATEWAY  = "staticgateway";
+    public final static String STATICPRIDNS   = "staticpridns";
+    public final static String STATICSECDNS   = "staticsecdns";
+    public final static String HOSTNAME       = "hostname";
+    public final static String APN3G          = "apn3g";
+    public final static String PIN3G          = "pin3g";
+    public final static String DIAL3G         = "dial3g";
+    public final static String USER3G         = "user3g";
+    public final static String PASSWORD3G     = "password3g";
+    public final static String DEV3G          = "dev3g";
+    public final static String PPTPSERVER     = "pptpserver";
+    public final static String PPTPUSER       = "pptpuser";
+    public final static String PPTPPASS       = "pptppass";
+    public final static String MACCLONEENBL   = "maccloneenbl";
+    public final static String MACCLONEMAC    = "macclonemac";
+    //security
+    public final static String KEY_PAGE_SECURITY          = "security";
+    public final static String SSIDINDEX                  = "ssidIndex";
+    public final static String SECURITY_MODE              = "security_mode";
+    public final static String WEP_DEFAULT_KEY            = "wep_default_key";
+    public final static String WEP_KEY_1                  = "wep_key_1";
+    public final static String WEP1SELECT                 = "WEP1Select";
+    public final static String WEP_KEY_2                  = "wep_key_2";
+    public final static String WEP2SELECT                 = "WEP2Select";
+    public final static String WEP_KEY_3                  = "wep_key_3";
+    public final static String WEP3SELECT                 = "WEP3Select";
+    public final static String WEP_KEY_4                  = "wep_key_4";
+    public final static String WEP4SELECT                 = "WEP4Select";
+    public final static String CIPHER                     = "cipher";
+    public final static String PASSPHRASE                 = "passphrase";
+    public final static String KEYRENEWALINTERVAL         = "keyRenewalInterval";
+    public final static String PREAUTHENTICATION          = "PreAuthentication";
+    public final static String RADIUSSERVERIP             = "RadiusServerIP";
+    public final static String RADIUSSERVERPORT           = "RadiusServerPort";
+    public final static String RADIUSSERVERSECRET         = "RadiusServerSecret";
+    public final static String RADIUSSERVERSESSIONTIMEOUT = "RadiusServerSessionTimeout";
+    public final static String RADIUSSERVERIDLETIMEOUT    = "RadiusServerIdleTimeout";
+    public final static String APSELECT_0                 = "apselect_0";
+    public final static String NEWAP_TEXT_0               = "newap_text_0";
+    public final static String APSELECT_1                 = "apselect_1";
+    public final static String NEWAP_TEXT_1               = "newap_text_1";
+    public final static String APSELECT_2                 = "apselect_2";
+    public final static String NEWAP_TEXT_2               = "newap_text_2";
+    public final static String APSELECT_3                 = "apselect_3";
+    public final static String NEWAP_TEXT_3               = "newap_text_3";
+    public final static String APSELECT_4                 = "apselect_4";
+    public final static String NEWAP_TEXT_4               = "newap_text_4";
+    public final static String APSELECT_5                 = "apselect_5";
+    public final static String NEWAP_TEXT_5               = "newap_text_5";
+    public final static String APSELECT_6                 = "apselect_6";
+    public final static String NEWAP_TEXT_6               = "newap_text_6";
+    public final static String APSELECT_7                 = "apselect_7";
+    public final static String NEWAP_TEXT_7               = "newap_text_7";
+    //admin
+    public final static String KEY_PAGE_ADM = "sysAdm";
+    public final static String ADM_USER = "admuser";
+    public final static String ADM_PASS = "admpass";
+    //timezone
+    public final static String KEY_PAGE_TIMEZONE = "ntp";
+    public final static String HOSTTIME = "HOSTTIME";
+    public final static String TIME_ZONE = "TIME_ZONE";
+    public final static String NTPSERVERIP = "NTPSERVERIP";
+    public final static String NTPSYNC = "NTPSYNC";
 }

@@ -54,6 +54,7 @@ public class MjpegInputStream extends DataInputStream {
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             return new MjpegInputStream(urlConnection.getInputStream());
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return null;

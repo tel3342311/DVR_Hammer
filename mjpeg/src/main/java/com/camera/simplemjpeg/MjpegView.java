@@ -134,7 +134,7 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
                         int ret = mIn.readMjpegFrame(bmp);
 
                         if (ret == -1) {
-                            ((MjpegActivity) saved_context).setImageError();
+
                             return;
                         }
 

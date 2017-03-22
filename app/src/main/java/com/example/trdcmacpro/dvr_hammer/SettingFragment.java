@@ -31,6 +31,7 @@ public class SettingFragment extends Fragment {
     private String mParam2;
 
     private Spinner mSpinner;
+    private Spinner mModemSpinner;
 
     private Button mButtonPreview;
     private Button mButtonStrorage;
@@ -88,6 +89,12 @@ public class SettingFragment extends Fragment {
                 R.array.gmt_list,
                 android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(gmtList);
+
+        mModemSpinner = (Spinner) rootView.findViewById(R.id.modem_spinner);
+        ArrayAdapter<CharSequence> dev3gList = ArrayAdapter.createFromResource(getContext(),
+                R.array.dev3g_list,
+                android.R.layout.simple_spinner_dropdown_item);
+        mModemSpinner.setAdapter(dev3gList);
 
         mButtonPreview = (Button) rootView.findViewById(R.id.recording_mode);
         mButtonStrorage = (Button) rootView.findViewById(R.id.storage_mode);
