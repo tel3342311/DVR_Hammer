@@ -80,7 +80,7 @@ public class MjpegActivity extends Activity {
         setContentView(R.layout.main);
         mv = (MjpegView) findViewById(R.id.mv);
         if (mv != null) {
-            mv.setResolution(width, height);
+            mv.setResolution(1280, 720);
         }
 
         setTitle(R.string.title_connecting);

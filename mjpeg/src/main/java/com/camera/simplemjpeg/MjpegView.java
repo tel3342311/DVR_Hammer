@@ -10,6 +10,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -51,8 +52,8 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
 
     // image size
 
-    public int IMG_WIDTH = 640;
-    public int IMG_HEIGHT = 480;
+    public int IMG_WIDTH = 1280;
+    public int IMG_HEIGHT = 720;
 
     public class MjpegViewThread extends Thread {
         private SurfaceHolder mSurfaceHolder;
@@ -131,13 +132,14 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
                         if (bmp == null) {
                             bmp = Bitmap.createBitmap(IMG_WIDTH, IMG_HEIGHT, Bitmap.Config.ARGB_8888);
                         }
-                        int ret = mIn.readMjpegFrame(bmp);
 
+                        //bmp = mIn.readMjpegFrame();
+                        int ret = mIn.readMjpegFrame(bmp);
                         if (ret == -1) {
 
                             return;
                         }
-
+                        Log.d(TAG, "W x H is " + bmp.getWidth() + "x"+ bmp.getHeight());
                         destRect = destRect(bmp.getWidth(), bmp.getHeight());
 
                         c = mSurfaceHolder.lockCanvas();

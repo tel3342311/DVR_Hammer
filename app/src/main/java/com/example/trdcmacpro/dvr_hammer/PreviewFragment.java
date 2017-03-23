@@ -1,14 +1,17 @@
 package com.example.trdcmacpro.dvr_hammer;
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.camera.simplemjpeg.MjpegInputStream;
 import com.camera.simplemjpeg.MjpegView;
+import com.example.trdcmacpro.dvr_hammer.util.Def;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +24,7 @@ public class PreviewFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private MjpegView mv;
+    private boolean suspending;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -30,15 +34,6 @@ public class PreviewFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PreviewFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static PreviewFragment newInstance(String param1, String param2) {
         PreviewFragment fragment = new PreviewFragment();
         Bundle args = new Bundle();
@@ -61,20 +56,61 @@ public class PreviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final String URL = "http://192.168.10.1:8081/?action=stream";
         View view = inflater.inflate(R.layout.fragment_preview, container, false);
         mv = (MjpegView) view.findViewById(R.id.preview);
-        mv.setDisplayMode(MjpegView.SIZE_BEST_FIT);
-        mv.showFps(true);
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                mv.setSource(MjpegInputStream.read(URL));
-            }
-        }.start();
+        new ReadDVR().execute(Def.DVR_PREVIEW_URL);
 
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mv != null) {
+            if (suspending) {
+                new ReadDVR().execute(Def.DVR_PREVIEW_URL);
+                suspending = false;
+            }
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mv != null) {
+            if (mv.isStreaming()) {
+                mv.stopPlayback();
+                suspending = true;
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mv != null) {
+            mv.freeCameraMemory();
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
+    public class ReadDVR extends AsyncTask<String, Void, MjpegInputStream> {
+        protected MjpegInputStream doInBackground(String... url) {
+            return MjpegInputStream.read(url[0]);
+        }
+
+        protected void onPostExecute(MjpegInputStream result) {
+            mv.setSource(result);
+            if (result != null) {
+                result.setSkip(1);
+            } else {
+            }
+            mv.setDisplayMode(MjpegView.SIZE_FULLSCREEN);
+            mv.showFps(true);
+        }
+    }
 }
