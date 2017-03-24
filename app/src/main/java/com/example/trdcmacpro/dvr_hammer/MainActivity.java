@@ -5,19 +5,18 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.View
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.Window;
-import android.view.WindowManager;
 
-import com.camera.simplemjpeg.MjpegInputStream;
-import com.camera.simplemjpeg.MjpegView;
 import com.example.trdcmacpro.dvr_hammer.dummy.DummyContent;
 
 public class MainActivity extends AppCompatActivity implements ItemFragment.OnListFragmentInteractionListener {
 
-
+    private int PAGE_COUNT = 3;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -60,5 +59,31 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     @Override
     public void onListFragmentInteraction(DummyContent.DummyItem item) {
 
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        FragmentPagerAdapter adapter = new FragmentPagerAdapter(getSupportFragmentManager());
+
+    }
+
+
+    public class DVRFragmentAdapter extends FragmentPagerAdapter {
+
+        @Override
+        public int getCount() {
+            return PAGE_COUNT;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            if (position == 0) {
+                return PreviewFragment.newInstance("","");
+            } else if (position == 1) {
+                return ItemFragment.newInstance(0);
+            } else if (position == 2) {
+                return SettingFragment.newInstance("","");
+            }
+            return null;
+        }
     }
 }
