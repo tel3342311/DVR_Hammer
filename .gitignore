@@ -248,3 +248,10 @@ simplemjpegview/build/intermediates/transforms/mergeJniLibs/release/folders/2000
 simplemjpegview/build/intermediates/transforms/mergeJniLibs/release/folders/2000/1f/main/lib/x86/libImageProc.so
 simplemjpegview/build/outputs/apk/simplemjpegview-release-unsigned.apk
 simplemjpegview/build/outputs/logs/manifest-merger-release-report.txt
+local.properties
+.idea/compiler.xml
+.idea/misc.xml
+.idea/workspace.xml
+.idea/copyright/profiles_settings.xml
+build/android-profile/profile-2017-03-28-00-07-18-654.rawproto
+build/android-profile/profile-2017-03-28-00-08-46-094.rawproto
