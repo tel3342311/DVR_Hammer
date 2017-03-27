@@ -19,6 +19,7 @@ import com.example.trdcmacpro.dvr_hammer.util.Def;
  * create an instance of this fragment.
  */
 public class PreviewFragment extends Fragment {
+    private final static String TAG = PreviewFragment.class.getName();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -28,19 +29,21 @@ public class PreviewFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private static PreviewFragment mFragment;
 
     public PreviewFragment() {
         // Required empty public constructor
     }
 
     public static PreviewFragment newInstance(String param1, String param2) {
-        PreviewFragment fragment = new PreviewFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+        if (mFragment == null) {
+            mFragment = new PreviewFragment();
+            Bundle args = new Bundle();
+            args.putString(ARG_PARAM1, param1);
+            args.putString(ARG_PARAM2, param2);
+            mFragment.setArguments(args);
+        }
+        return mFragment;
     }
 
     @Override
@@ -68,10 +71,11 @@ public class PreviewFragment extends Fragment {
         super.onResume();
         if (mv != null) {
             if (suspending) {
-                new ReadDVR().execute(Def.DVR_PREVIEW_URL);
+                mv.resumePlayback();
                 suspending = false;
             }
         }
+        Log.d(TAG, "onResume called");
     }
 
     @Override
@@ -83,6 +87,7 @@ public class PreviewFragment extends Fragment {
                 suspending = true;
             }
         }
+        Log.d(TAG, "OnPause called");
     }
 
     @Override
@@ -92,6 +97,25 @@ public class PreviewFragment extends Fragment {
             mv.freeCameraMemory();
         }
     }
+
+    public void pauseVideo() {
+        if (mv != null) {
+            if (mv.isStreaming()) {
+                mv.stopPlayback();
+                suspending = true;
+            }
+        }
+    }
+
+    public void playVideo() {
+        if (mv != null) {
+            if (suspending) {
+                new ReadDVR().execute(Def.DVR_PREVIEW_URL);
+                suspending = false;
+            }
+        }
+    }
+
 
     @Override
     public void onDetach() {

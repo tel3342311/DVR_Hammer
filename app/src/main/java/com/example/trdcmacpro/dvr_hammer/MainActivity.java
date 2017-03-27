@@ -6,16 +6,17 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.View
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.trdcmacpro.dvr_hammer.dummy.DummyContent;
 
 public class MainActivity extends AppCompatActivity implements ItemFragment.OnListFragmentInteractionListener {
 
+    private DVRFragmentAdapter mAdapter;
+    private ViewPager mViewPager;
     private int PAGE_COUNT = 3;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -24,13 +25,13 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_preview:
-                    setFragment(PreviewFragment.newInstance("",""));
+                    mViewPager.setCurrentItem(0);
                     return true;
                 case R.id.navigation_storage:
-                    setFragment(ItemFragment.newInstance(0));
+                    mViewPager.setCurrentItem(1);
                     return true;
                 case R.id.navigation_setting:
-                    setFragment(SettingFragment.newInstance("",""));
+                    mViewPager.setCurrentItem(2);
                     return true;
             }
             return false;
@@ -43,17 +44,11 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setFragment(PreviewFragment.newInstance("",""));
+        mViewPager = (ViewPager) findViewById(R.id.content);
+        setupViewPager(mViewPager);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-    }
 
-    protected void setFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction =
-                fragmentManager.beginTransaction();
-        fragmentTransaction.replace(android.R.id.content, fragment);
-        fragmentTransaction.commit();
     }
 
     @Override
@@ -62,12 +57,36 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        FragmentPagerAdapter adapter = new FragmentPagerAdapter(getSupportFragmentManager());
-
+        mAdapter = new DVRFragmentAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(mAdapter);
+        viewPager.addOnPageChangeListener(mOnPageChangeListener);
     }
 
+    private ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
+
+        private int currentPosition = 0;
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            currentPosition = position;
+            Log.d(TAG, "Current position of Fragment is " + currentPosition);
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
 
     public class DVRFragmentAdapter extends FragmentPagerAdapter {
+
+        public DVRFragmentAdapter(FragmentManager fm) {
+            super(fm);
+        }
 
         @Override
         public int getCount() {
@@ -84,6 +103,18 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
                 return SettingFragment.newInstance("","");
             }
             return null;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            if (position == 0) {
+                return getString(R.string.title_home);
+            } else if (position == 1) {
+                return getString(R.string.title_dashboard);
+            } else if (position == 2) {
+                return getString(R.string.title_notifications);
+            }
+            return super.getPageTitle(position);
         }
     }
 }
