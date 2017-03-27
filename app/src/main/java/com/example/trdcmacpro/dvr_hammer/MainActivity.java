@@ -15,6 +15,7 @@ import com.example.trdcmacpro.dvr_hammer.dummy.DummyContent;
 
 public class MainActivity extends AppCompatActivity implements ItemFragment.OnListFragmentInteractionListener {
 
+    private final static String TAG = MainActivity.class.getName();
     private DVRFragmentAdapter mAdapter;
     private ViewPager mViewPager;
     private int PAGE_COUNT = 3;

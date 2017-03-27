@@ -2,135 +2,46 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
+    android:layout_margin="20dp"
     tools:context="com.example.trdcmacpro.dvr_hammer.SettingFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:text="DVR Config" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <Button
-            android:id="@+id/recording_mode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Recording Mode"/>
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="20dp"
+        android:layout_weight="1"
+        android:background="@android:color/holo_orange_light"/>
 
-        <Button
-            android:id="@+id/storage_mode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Storage Mode"/>
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:text="DVR Camera" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Button
-            android:id="@+id/front_cam"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Front Camera"/>
-
-        <Button
-            android:id="@+id/rear_cam"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Rear Camera"/>
-
-        <Button
-            android:id="@+id/front_rear_cam"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Front + Rear"/>
-
-    </LinearLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:text="File Length" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Button
-            android:id="@+id/length_2m"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2m"/>
-
-        <Button
-            android:id="@+id/length_3m"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="3m"/>
-
-        <Button
-            android:id="@+id/length_5m"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="5m"/>
-
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:text="DVR Timezone" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </Spinner>
-    </LinearLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:text="Internet"/>
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="APN"/>
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="PIN"/>
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Dial Number"/>
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="User name"/>
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Password"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:text="3g modem"/>
-    <Spinner
-        android:id="@+id/modem_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </Spinner>
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="20dp"
+        android:layout_weight="1"
+        android:background="@android:color/darker_gray"/>
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="20dp"
+        android:layout_weight="1"
+        android:background="@android:color/holo_blue_dark"/>
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="20dp"
+        android:layout_weight="1"
+        android:background="@android:color/holo_green_dark"/>
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="20dp"
+        android:layout_weight="1"
+        android:background="@android:color/holo_red_dark"/>
 </LinearLayout>
 
 
