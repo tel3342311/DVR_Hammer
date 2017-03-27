@@ -3,8 +3,8 @@
     <string name="title_home">Camera</string>
     <string name="title_dashboard">Records</string>
     <string name="title_notifications">DVR Settings</string>
-    <string name="title_setting_date">Date Time</string>
-    <string name="title_setting_recording">Recording</string>
+    <string name="title_setting_date">Sync Network Time</string>
+    <string name="title_setting_recording">Recording Setting</string>
     <string name="title_setting_internet">Internet</string>
     <string name="title_setting_vpn_routing">Cloud Service</string>
     <string name="title_setting_wifi_setting">Wifi Setting</string>

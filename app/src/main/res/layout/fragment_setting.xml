@@ -1,12 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:layout_margin="20dp"
-    tools:context="com.example.trdcmacpro.dvr_hammer.SettingFragment">
+    android:layout_margin="20dp">
 
     <ImageView
+        android:id="@+id/time_zone"
         android:layout_width="0dp"
         android:layout_height="300dp"
         android:layout_gravity="center_vertical"
@@ -15,6 +14,7 @@
         android:background="@android:color/holo_orange_light"/>
 
     <ImageView
+        android:id="@+id/recording"
         android:layout_width="0dp"
         android:layout_height="300dp"
         android:layout_gravity="center_vertical"
@@ -22,6 +22,7 @@
         android:layout_weight="1"
         android:background="@android:color/darker_gray"/>
     <ImageView
+        android:id="@+id/internet"
         android:layout_width="0dp"
         android:layout_height="300dp"
         android:layout_gravity="center_vertical"
@@ -29,6 +30,7 @@
         android:layout_weight="1"
         android:background="@android:color/holo_blue_dark"/>
     <ImageView
+        android:id="@+id/vpn"
         android:layout_width="0dp"
         android:layout_height="300dp"
         android:layout_gravity="center_vertical"
@@ -36,6 +38,7 @@
         android:layout_weight="1"
         android:background="@android:color/holo_green_dark"/>
     <ImageView
+        android:id="@+id/wifi"
         android:layout_width="0dp"
         android:layout_height="300dp"
         android:layout_gravity="center_vertical"

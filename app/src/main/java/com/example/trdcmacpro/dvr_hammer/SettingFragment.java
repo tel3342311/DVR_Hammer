@@ -3,15 +3,21 @@ package com.example.trdcmacpro.dvr_hammer;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.example.trdcmacpro.dvr_hammer.util.DVRClient;
 import com.example.trdcmacpro.dvr_hammer.util.Def;
+
+import static com.example.trdcmacpro.dvr_hammer.R.string.title_setting_wifi_setting;
 
 
 /**
@@ -20,6 +26,7 @@ import com.example.trdcmacpro.dvr_hammer.util.Def;
  * create an instance of this fragment.
  */
 public class SettingFragment extends Fragment {
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -41,6 +48,13 @@ public class SettingFragment extends Fragment {
     private Button mButtonLength2M;
     private Button mButtonLength3M;
     private Button mButtonLength5M;
+
+    private ImageView mTimeZone;
+    private ImageView mRecording;
+    private ImageView mInternet;
+    private ImageView mVpn;
+    private ImageView mWifi;
+
     public SettingFragment() {
         // Required empty public constructor
     }
@@ -63,6 +77,8 @@ public class SettingFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         mDvrClient = new DVRClient("admin", "admin");
+
+
     }
 
     @Override
@@ -70,12 +86,18 @@ public class SettingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
-        //findViews(view);
-        //setListener();
+        findViews(view);
+        setListener();
+        SettingMainFragment fragment = (SettingMainFragment)getParentFragment();
         return view;
     }
 
-//    void findViews(View rootView) {
+    void findViews(View rootView) {
+        mTimeZone = (ImageView) rootView.findViewById(R.id.time_zone);
+        mRecording = (ImageView) rootView.findViewById(R.id.recording);
+        mInternet = (ImageView) rootView.findViewById(R.id.internet);
+        mVpn = (ImageView) rootView.findViewById(R.id.vpn);
+        mWifi = (ImageView) rootView.findViewById(R.id.wifi);
 //        mSpinner = (Spinner) rootView.findViewById(R.id.spinner);
 //        ArrayAdapter<CharSequence> gmtList = ArrayAdapter.createFromResource(getContext(),
 //                R.array.gmt_list,
@@ -96,8 +118,14 @@ public class SettingFragment extends Fragment {
 //        mButtonLength2M = (Button) rootView.findViewById(R.id.length_2m);
 //        mButtonLength3M = (Button) rootView.findViewById(R.id.length_3m);
 //        mButtonLength5M = (Button) rootView.findViewById(R.id.length_5m);
-//    }
-//    void setListener() {
+    }
+    void setListener() {
+        mTimeZone.setOnClickListener(mOnSettingClickListener);
+        mRecording.setOnClickListener(mOnSettingClickListener);
+        mInternet.setOnClickListener(mOnSettingClickListener);
+        mVpn.setOnClickListener(mOnSettingClickListener);
+        mWifi.setOnClickListener(mOnSettingClickListener);
+
 //        mButtonPreview.setOnClickListener(mOnRecordingClickListener);
 //        mButtonStrorage.setOnClickListener(mOnStrorageClickListener);
 //        mButtonFront.setOnClickListener(mOnFrontCamClickListener);
@@ -106,7 +134,7 @@ public class SettingFragment extends Fragment {
 //        mButtonLength2M.setOnClickListener(mOnLengthClickListener);
 //        mButtonLength3M.setOnClickListener(mOnLengthClickListener);
 //        mButtonLength5M.setOnClickListener(mOnLengthClickListener);
-//    }
+    }
     private View.OnClickListener mOnRecordingClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -192,6 +220,31 @@ public class SettingFragment extends Fragment {
 //                    }
                 }
             }.start();
+        }
+    };
+
+    private View.OnClickListener mOnSettingClickListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View view) {
+            ViewPager viewPager = ((SettingMainFragment) getParentFragment()).getViewPager();
+            switch (view.getId()) {
+                case R.id.time_zone:
+                    viewPager.setCurrentItem(1);
+                    break;
+                case R.id.recording:
+                    viewPager.setCurrentItem(2);
+                    break;
+                case R.id.internet:
+                    viewPager.setCurrentItem(3);
+                    break;
+                case R.id.vpn:
+                    viewPager.setCurrentItem(4);
+                    break;
+                case R.id.wifi:
+                    viewPager.setCurrentItem(5);
+                    break;
+            }
         }
     };
 }
