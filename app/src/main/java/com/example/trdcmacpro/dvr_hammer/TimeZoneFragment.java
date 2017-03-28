@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 public class TimeZoneFragment extends Fragment {
 
 
-    public TimeZoneFragment() {
+    private TimeZoneFragment() {
         // Required empty public constructor
     }
 

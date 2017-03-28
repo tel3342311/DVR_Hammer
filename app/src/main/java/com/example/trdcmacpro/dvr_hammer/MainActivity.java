@@ -7,7 +7,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -24,6 +26,8 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            ActionBar actionbar = getSupportActionBar();
+            actionbar.setTitle("這是 Toolbar 標題");
             switch (item.getItemId()) {
                 case R.id.navigation_preview:
                     mViewPager.setCurrentItem(0);
@@ -44,7 +48,8 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Toolbar appToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(appToolbar);
         mViewPager = (ViewPager) findViewById(R.id.content);
         setupViewPager(mViewPager);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -101,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
             } else if (position == 1) {
                 return ItemFragment.newInstance(0);
             } else if (position == 2) {
-                return SettingFragment.newInstance("","");
+                return SettingMainFragment.newInstance();
             }
             return null;
         }

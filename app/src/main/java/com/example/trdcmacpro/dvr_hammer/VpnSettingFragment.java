@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 public class VpnSettingFragment extends Fragment {
 
 
-    public VpnSettingFragment() {
+    private VpnSettingFragment() {
         // Required empty public constructor
     }
 

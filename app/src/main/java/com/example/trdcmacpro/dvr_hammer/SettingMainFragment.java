@@ -16,13 +16,22 @@ import android.widget.TextView;
  */
 public class SettingMainFragment extends Fragment {
 
-    private static final int PAGE_COUNT = 5;
+    private static final int PAGE_COUNT = 6;
     private ViewPager mViewPager;
     private SettingFragmentAdapter mAdapter;
-    public SettingMainFragment() {
+    private SettingMainFragment() {
         // Required empty public constructor
     }
-
+    private static SettingMainFragment mFragment;
+    public static SettingMainFragment newInstance() {
+        if (mFragment == null) {
+            mFragment = new SettingMainFragment();
+            Bundle args = new Bundle();
+            mFragment.setArguments(args);
+            return mFragment;
+        }
+        return mFragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,8 +41,10 @@ public class SettingMainFragment extends Fragment {
         mViewPager = (ViewPager) view.findViewById(R.id.content);
         mAdapter = new SettingFragmentAdapter(getChildFragmentManager());
         mViewPager.setAdapter(mAdapter);
+        SettingMainFragment fragment = (SettingMainFragment) getParentFragment();
         return view;
     }
+
 
     public ViewPager getViewPager() {
         return mViewPager;

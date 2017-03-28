@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 public class WifiSettingFragment extends Fragment {
 
 
-    public WifiSettingFragment() {
+    private WifiSettingFragment() {
         // Required empty public constructor
     }
 

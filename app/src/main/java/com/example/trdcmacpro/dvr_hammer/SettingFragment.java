@@ -88,7 +88,6 @@ public class SettingFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
         findViews(view);
         setListener();
-        SettingMainFragment fragment = (SettingMainFragment)getParentFragment();
         return view;
     }
 
@@ -227,7 +226,7 @@ public class SettingFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            ViewPager viewPager = ((SettingMainFragment) getParentFragment()).getViewPager();
+            ViewPager viewPager = SettingMainFragment.newInstance().getViewPager();
             switch (view.getId()) {
                 case R.id.time_zone:
                     viewPager.setCurrentItem(1);

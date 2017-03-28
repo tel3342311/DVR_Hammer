@@ -14,12 +14,12 @@ import android.view.ViewGroup;
 public class InternetFragment extends Fragment {
 
 
-    public InternetFragment() {
+    private InternetFragment() {
         // Required empty public constructor
     }
 
-    public static SettingFragment newInstance() {
-        SettingFragment fragment = new SettingFragment();
+    public static InternetFragment newInstance() {
+        InternetFragment fragment = new InternetFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
