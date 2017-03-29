@@ -5,11 +5,11 @@
     <item
         android:id="@+id/action_camera_1"
         android:icon="@drawable/ic_camera_1"
-        android:title="camer1"
+        android:title="camera1"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/action_camera_2"
-        android:title="camer2"
+        android:title="camera2"
         android:icon="@drawable/ic_camera_2"
         app:showAsAction="ifRoom"/>
 </menu>

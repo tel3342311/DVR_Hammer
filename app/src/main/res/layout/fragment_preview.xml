@@ -1,13 +1,36 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.trdcmacpro.dvr_hammer.PreviewFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <com.camera.simplemjpeg.MjpegView
         android:id="@+id/preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-</FrameLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/snapshot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="16dp"
+        app:srcCompat="@drawable/ic_snapshot"
+        android:tint="@color/md_white_1000"
+        android:elevation="6dp"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp" />
+
+    <ImageView
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        android:layout_alignEnd="@id/snapshot"
+        android:layout_alignRight="@id/snapshot"
+        android:layout_below="@id/snapshot"
+        android:background="@color/md_white_1000"
+        android:padding="2dp"/>
+
+</RelativeLayout>

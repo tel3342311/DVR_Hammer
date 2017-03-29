@@ -1,8 +1,12 @@
 package com.example.trdcmacpro.dvr_hammer;
 
 
+import android.content.ContentResolver;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +29,7 @@ public class PreviewFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private MjpegView mv;
+    private FloatingActionButton mSnapshot;
     private boolean suspending;
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -61,11 +66,41 @@ public class PreviewFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_preview, container, false);
         mv = (MjpegView) view.findViewById(R.id.preview);
+        mSnapshot = (FloatingActionButton) view.findViewById(R.id.snapshot);
         new ReadDVR().execute(Def.DVR_PREVIEW_URL);
-
+        setListener();
         return view;
     }
 
+    public void setListener() {
+
+        mv.setOnClickListener(mOnClickListener);
+        mSnapshot.setOnClickListener(mOnSnapshotClickListener);
+    }
+
+    public View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ((MainActivity)getActivity()).toggleMenu();
+        }
+    };
+
+    private View.OnClickListener mOnSnapshotClickListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            ContentResolver cr = getContext().getContentResolver();
+            String uri = MediaStore.Images.Media.insertImage(cr, snapShot(), "", "" );
+            Log.d(TAG, "The URI of insert image is " + uri);
+            queryMiniThumbnails(cr, uri,; MediaStore.Images.Thumbnails.MINI_KIND, null);.
+            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
+                    cr, uri, MediaStore.Images.Thumbnails.MINI_KIND, null);
+        }
+    };
+
+    private Bitmap snapShot() {
+        return mv.getBitmap();
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -95,24 +130,6 @@ public class PreviewFragment extends Fragment {
         super.onDestroy();
         if (mv != null) {
             mv.freeCameraMemory();
-        }
-    }
-
-    public void pauseVideo() {
-        if (mv != null) {
-            if (mv.isStreaming()) {
-                mv.stopPlayback();
-                suspending = true;
-            }
-        }
-    }
-
-    public void playVideo() {
-        if (mv != null) {
-            if (suspending) {
-                new ReadDVR().execute(Def.DVR_PREVIEW_URL);
-                suspending = false;
-            }
         }
     }
 

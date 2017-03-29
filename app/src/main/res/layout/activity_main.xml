@@ -7,29 +7,28 @@
     android:layout_height="match_parent"
     tools:context="com.example.trdcmacpro.dvr_hammer.MainActivity">
 
+    <com.example.trdcmacpro.dvr_hammer.util.FragmentViewPager
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_primary"
+        app:itemIconTint="@color/md_white_1000"
+        app:itemTextColor="@color/md_white_1000"
+        app:menu="@menu/navigation" />
+
     <include
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         layout="@layout/toolbar" />
-
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/navigation"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:background="?android:attr/windowBackground"
-        app:menu="@menu/navigation" />
-
-    <com.example.trdcmacpro.dvr_hammer.util.FragmentViewPager
-        android:id="@+id/content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/navigation"
-        android:layout_below="@id/toolbar"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-
 
 </RelativeLayout>

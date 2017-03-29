@@ -26,6 +26,8 @@ public class DVRClient {
     private String username;
     private String password;
     private Uri mUri;
+    private String mCameraMode = Def.FRONT_CAM_MODE;
+
     public DVRClient(String user, String pass) {
         if (!TextUtils.isEmpty(user)) {
             this.username = user;
@@ -67,10 +69,13 @@ public class DVRClient {
 
             int response = urlConnection.getResponseCode();
             Log.i(TAG, "Set DVR mode to " + mode + ", Response is " + response);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getCameraMode() {
+        return mCameraMode;
     }
 
     public void setCameraMode(String mode) {
@@ -105,7 +110,7 @@ public class DVRClient {
 
             int response = urlConnection.getResponseCode();
             Log.i(TAG, "Set Camera mode to " + mode + ", Response is " + response);
-
+            mCameraMode = mode;
         } catch (IOException e) {
             e.printStackTrace();
         }

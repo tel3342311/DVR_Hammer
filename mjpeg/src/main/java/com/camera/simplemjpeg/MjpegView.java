@@ -278,6 +278,12 @@ public class MjpegView extends SurfaceView implements SurfaceHolder.Callback {
         init(context);
     }
 
+    public Bitmap getBitmap() {
+        if (bmp != null) {
+            return Bitmap.createBitmap(bmp);
+        }
+        return null;
+    }
     public void surfaceCreated(SurfaceHolder holder) {
         surfaceDone = true;
     }
