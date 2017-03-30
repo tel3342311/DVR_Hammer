@@ -1,5 +1,8 @@
 package com.example.trdcmacpro.dvr_hammer;
 
+import android.content.Context;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -12,9 +15,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 
 import com.example.trdcmacpro.dvr_hammer.dummy.DummyContent;
 import com.example.trdcmacpro.dvr_hammer.util.DVRClient;
@@ -30,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     private boolean showMenu;
     private DVRClient mDvrClient;
     private int PAGE_COUNT = 3;
+    private View loadingIndicator;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -70,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         setupViewPager(mViewPager);
         mBottomMenu = (BottomNavigationView) findViewById(R.id.navigation);
         mBottomMenu.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
+        loadingIndicator = buildLoadingIndicator(this);
     }
 
     @Override
@@ -78,9 +86,13 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         String cameraMode = mDvrClient.getCameraMode();
         if (cameraMode.equals(Def.FRONT_CAM_MODE)) {
-            menu.findItem(R.id.action_camera_1).setVisible(false);
+            MenuItem item = menu.findItem(R.id.action_camera_1);
+            item.setActionView(null);
+            item.setVisible(false);
         } else if (cameraMode.equals(Def.REAR_CAM_MODE)) {
-            menu.findItem(R.id.action_camera_2).setVisible(false);
+            MenuItem item = menu.findItem(R.id.action_camera_2);
+            item.setActionView(null);
+            item.setVisible(false);
         }
         return true;
     }
@@ -93,6 +105,8 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         final String mode;
+        Log.d(TAG, "onOptionsItemSelected called");
+        item.setActionView(loadingIndicator);
         switch (item.getItemId()) {
             case R.id.action_camera_1:
                 mode = Def.FRONT_CAM_MODE;
@@ -153,6 +167,23 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
 
         }
     };
+
+    public static int dpToPx(Context ctx, int val) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                val, ctx.getResources().getDisplayMetrics());
+    }
+
+    public static View buildLoadingIndicator(Context ctx) {
+        boolean large = (ctx.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) > Configuration.SCREENLAYOUT_SIZE_NORMAL;
+        boolean fresh = Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1;
+        int px = (large && fresh) ? 64 : 56;
+        FrameLayout fl = new FrameLayout(ctx);
+        fl.setMinimumWidth(dpToPx(ctx, px));
+        ProgressBar pb = new ProgressBar(ctx);
+        px = dpToPx(ctx, 32);
+        fl.addView(pb, new FrameLayout.LayoutParams(px, px, Gravity.CENTER));
+        return fl;
+    }
 
     public class DVRFragmentAdapter extends FragmentPagerAdapter {
 
