@@ -2,6 +2,7 @@ package com.example.trdcmacpro.dvr_hammer;
 
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,10 +13,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.camera.simplemjpeg.MjpegInputStream;
 import com.camera.simplemjpeg.MjpegView;
 import com.example.trdcmacpro.dvr_hammer.util.Def;
+
+import java.net.URI;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,6 +34,7 @@ public class PreviewFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private MjpegView mv;
     private FloatingActionButton mSnapshot;
+    private ImageView mThumbnail;
     private boolean suspending;
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -67,6 +72,7 @@ public class PreviewFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_preview, container, false);
         mv = (MjpegView) view.findViewById(R.id.preview);
         mSnapshot = (FloatingActionButton) view.findViewById(R.id.snapshot);
+        mThumbnail = (ImageView) view.findViewById(R.id.thumbnail);
         new ReadDVR().execute(Def.DVR_PREVIEW_URL);
         setListener();
         return view;
@@ -92,9 +98,11 @@ public class PreviewFragment extends Fragment {
             ContentResolver cr = getContext().getContentResolver();
             String uri = MediaStore.Images.Media.insertImage(cr, snapShot(), "", "" );
             Log.d(TAG, "The URI of insert image is " + uri);
-            queryMiniThumbnails(cr, uri,; MediaStore.Images.Thumbnails.MINI_KIND, null);.
-            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
-                    cr, uri, MediaStore.Images.Thumbnails.MINI_KIND, null);
+            long id = ContentUris.parseId(android.net.Uri.parse(uri));
+            // Wait until MINI_KIND thumbnail is generated.
+            Bitmap miniThumb = MediaStore.Images.Thumbnails.getThumbnail(cr, id, MediaStore.Images.Thumbnails.MINI_KIND, null);
+            mThumbnail.setImageBitmap(miniThumb);
+            mThumbnail.setVisibility(View.VISIBLE);
         }
     };
 

@@ -10,27 +10,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="64dp"
+        android:background="@color/md_white_1000"
+        android:scaleType="centerCrop"
+        android:padding="2dp"
+        android:cropToPadding="true"
+        android:visibility="invisible"/>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/snapshot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@id/thumbnail"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
         app:srcCompat="@drawable/ic_snapshot"
         android:tint="@color/md_white_1000"
         android:elevation="6dp"
         app:elevation="6dp"
         app:pressedTranslationZ="12dp" />
-
-    <ImageView
-        android:layout_width="84dp"
-        android:layout_height="84dp"
-        android:layout_alignEnd="@id/snapshot"
-        android:layout_alignRight="@id/snapshot"
-        android:layout_below="@id/snapshot"
-        android:background="@color/md_white_1000"
-        android:padding="2dp"/>
 
 </RelativeLayout>
