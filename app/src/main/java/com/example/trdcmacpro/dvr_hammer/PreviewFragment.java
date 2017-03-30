@@ -19,7 +19,6 @@ import com.camera.simplemjpeg.MjpegInputStream;
 import com.camera.simplemjpeg.MjpegView;
 import com.example.trdcmacpro.dvr_hammer.util.Def;
 
-import java.net.URI;
 
 /**
  * A simple {@link Fragment} subclass.

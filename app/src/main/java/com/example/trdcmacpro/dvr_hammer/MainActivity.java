@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -27,6 +28,9 @@ import com.example.trdcmacpro.dvr_hammer.dummy.DummyContent;
 import com.example.trdcmacpro.dvr_hammer.util.DVRClient;
 import com.example.trdcmacpro.dvr_hammer.util.Def;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class MainActivity extends AppCompatActivity implements ItemFragment.OnListFragmentInteractionListener {
 
     private final static String TAG = MainActivity.class.getName();
@@ -34,10 +38,13 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     private ViewPager mViewPager;
     private Toolbar mToolBar;
     private BottomNavigationView mBottomMenu;
-    private boolean showMenu;
+    private boolean showMenu = true;
     private DVRClient mDvrClient;
     private int PAGE_COUNT = 3;
     private View loadingIndicator;
+    private Handler mHandlerTime = new Handler();
+    private boolean isTimerEnable = true;
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -47,7 +54,11 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
             switch (item.getItemId()) {
                 case R.id.navigation_preview:
                     mViewPager.setCurrentItem(0);
-                    actionbar.setTitle(mViewPager.getAdapter().getPageTitle(0));
+                    if (mDvrClient.getCameraMode().equals(Def.FRONT_CAM_MODE)) {
+                        actionbar.setTitle(mViewPager.getAdapter().getPageTitle(0) + " 1");
+                    } else {
+                        actionbar.setTitle(mViewPager.getAdapter().getPageTitle(0) + " 2");
+                    }
                     return true;
                 case R.id.navigation_storage:
                     mViewPager.setCurrentItem(1);
@@ -67,9 +78,24 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("Camera 1");
         findViews();
         mDvrClient = new DVRClient("admin", "admin");
+        mHandlerTime.postDelayed(HideUIControl, 1500);
     }
+
+    public Runnable HideUIControl = new Runnable()
+    {
+        public void run() {
+
+            if (showMenu) {
+                mBottomMenu.setVisibility(View.GONE);
+                mToolBar.setVisibility(View.GONE);
+                showMenu = false;
+            }
+
+        }
+    };
 
     private void findViews() {
         mToolBar = (Toolbar) findViewById(R.id.toolbar);
@@ -110,9 +136,11 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         switch (item.getItemId()) {
             case R.id.action_camera_1:
                 mode = Def.FRONT_CAM_MODE;
+                getSupportActionBar().setTitle(mViewPager.getAdapter().getPageTitle(0) + " 1");
                 break;
             case R.id.action_camera_2:
                 mode = Def.REAR_CAM_MODE;
+                getSupportActionBar().setTitle(mViewPager.getAdapter().getPageTitle(0) + " 2");
                 break;
             default:
                 mode = Def.FRONT_CAM_MODE;
@@ -201,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
             if (position == 0) {
                 return PreviewFragment.newInstance("","");
             } else if (position == 1) {
-                return ItemFragment.newInstance(0);
+                return ItemFragment.newInstance(10);
             } else if (position == 2) {
                 return SettingMainFragment.newInstance();
             }
