@@ -151,6 +151,37 @@ public class DVRClient {
             e.printStackTrace();
         }
     }
+    private void getRecordingList() {
+        try {
+            URL url = new URL(Def.DVR_RECORDINGS_URL);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            if (!TextUtils.isEmpty(password)) {
+                urlConnection.setRequestProperty("Authorization", getAuthorizationHeader());
+            }
+
+            String query = builder.build().getEncodedQuery();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            urlConnection.setUseCaches(false);
+            urlConnection.setRequestProperty("Content-Length", Integer.toString(query.getBytes().length));
+
+            OutputStream os = urlConnection.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(query);
+            writer.flush();
+            writer.close();
+            os.close();
+
+            int response = urlConnection.getResponseCode();
+            Log.i(TAG, "Get recording clips , Response is " + response);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private String getAuthorizationHeader() {
         try {

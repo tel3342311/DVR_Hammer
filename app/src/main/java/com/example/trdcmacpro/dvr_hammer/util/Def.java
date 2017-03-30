@@ -3,6 +3,7 @@ package com.example.trdcmacpro.dvr_hammer.util;
 public class Def {
 
     public final static String DVR_PREVIEW_URL = "http://192.168.10.1:8081/?action=stream";
+    public final static String DVR_RECORDINGS_URL = "http://192.168.10.1:8080/sda1/MBA-CAM/";
     public final static String DVR_Url = "http://192.168.10.1/%s";
     public final static String DVR_IP = "192.168.10.1";
     //camera setting
