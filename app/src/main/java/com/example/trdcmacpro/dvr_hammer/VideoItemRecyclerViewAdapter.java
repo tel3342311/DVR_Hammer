@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.example.trdcmacpro.dvr_hammer.ItemFragment.OnListFragmentInteractionListener;
 import com.example.trdcmacpro.dvr_hammer.dummy.DummyContent.DummyItem;
+import com.example.trdcmacpro.dvr_hammer.util.RecordingItem;
 
 import java.util.List;
 
@@ -19,10 +20,10 @@ import java.util.List;
  */
 public class VideoItemRecyclerViewAdapter extends RecyclerView.Adapter<VideoItemRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<RecordingItem> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public VideoItemRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public VideoItemRecyclerViewAdapter(List<RecordingItem> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -38,8 +39,8 @@ public class VideoItemRecyclerViewAdapter extends RecyclerView.Adapter<VideoItem
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(mValues.get(position).name);
+        holder.mContentView.setText(mValues.get(position).time);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +63,7 @@ public class VideoItemRecyclerViewAdapter extends RecyclerView.Adapter<VideoItem
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public RecordingItem mItem;
 
         public ViewHolder(View view) {
             super(view);

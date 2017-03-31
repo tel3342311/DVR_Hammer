@@ -6,10 +6,17 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.w3c.dom.Text;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
@@ -17,6 +24,8 @@ import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.PasswordAuthentication;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class DVRClient {
@@ -151,7 +160,9 @@ public class DVRClient {
             e.printStackTrace();
         }
     }
-    private void getRecordingList() {
+    public List<RecordingItem> getRecordingList() {
+
+        List<RecordingItem> list = new ArrayList<>();
         try {
             URL url = new URL(Def.DVR_RECORDINGS_URL);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -159,28 +170,57 @@ public class DVRClient {
                 urlConnection.setRequestProperty("Authorization", getAuthorizationHeader());
             }
 
-            String query = builder.build().getEncodedQuery();
             urlConnection.setRequestMethod("GET");
             urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
             urlConnection.setUseCaches(false);
-            urlConnection.setRequestProperty("Content-Length", Integer.toString(query.getBytes().length));
 
-            OutputStream os = urlConnection.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(
-                    new OutputStreamWriter(os, "UTF-8"));
-            writer.write(query);
-            writer.flush();
-            writer.close();
-            os.close();
+            InputStream is = urlConnection.getInputStream();
+            Document doc = Jsoup.parse(is, "UTF-8", Def.DVR_RECORDINGS_URL);
+            Elements elements = doc.select("a[href*=.mp4]");
+            for (Element element : elements) {
+                String uri = element.attr("abs:href");
+                String name = element.text();
+                String time = element.parent().siblingElements().get(0).text();
+                String size = element.parent().siblingElements().get(1).text();
 
+                Log.i(TAG, "Get recording clips , <a> uri is " + uri);
+                Log.i(TAG, "Get recording clips , <a> name is " + name);
+                Log.i(TAG, "Get recording clips , <a> time is " + time);
+                Log.i(TAG, "Get recording clips , <a> size is " + size);
+                RecordingItem item = new RecordingItem(uri, name, time, size);
+                list.add(item);
+            }
+            is.close();
             int response = urlConnection.getResponseCode();
             Log.i(TAG, "Get recording clips , Response is " + response);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return list;
+    }
+
+    private void testInputData(InputStream is) {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(
+                    new InputStreamReader(is, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String line;
+        try {
+            while ((line = reader.readLine()) != null) {
+                Log.d(TAG, line);
+            }
+            reader.close();
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private String getAuthorizationHeader() {

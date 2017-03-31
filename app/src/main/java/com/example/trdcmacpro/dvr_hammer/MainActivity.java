@@ -27,6 +27,7 @@ import android.widget.ProgressBar;
 import com.example.trdcmacpro.dvr_hammer.dummy.DummyContent;
 import com.example.trdcmacpro.dvr_hammer.util.DVRClient;
 import com.example.trdcmacpro.dvr_hammer.util.Def;
+import com.example.trdcmacpro.dvr_hammer.util.RecordingItem;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -124,8 +125,9 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     }
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+    public void onListFragmentInteraction(RecordingItem item) {
 
+        Log.i(TAG, "recording item clicked : " + item.name);
     }
 
     @Override

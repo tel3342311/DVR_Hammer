@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 
 import com.example.trdcmacpro.dvr_hammer.dummy.DummyContent;
 import com.example.trdcmacpro.dvr_hammer.dummy.DummyContent.DummyItem;
+import com.example.trdcmacpro.dvr_hammer.util.DVRClient;
+import com.example.trdcmacpro.dvr_hammer.util.RecordingItem;
 
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class ItemFragment extends Fragment {
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
+    private DVRClient mDvrClient;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -65,8 +68,21 @@ public class ItemFragment extends Fragment {
         Context context = view.getContext();
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         //recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-        recyclerView.setAdapter(new VideoItemRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+        mDvrClient = new DVRClient("admin", "admin");
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                final List<RecordingItem> list = mDvrClient.getRecordingList();
 
+                recyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerView.setAdapter(new VideoItemRecyclerViewAdapter(list, mListener));
+                    }
+                });
+            }
+        }.start();
         return view;
     }
 
@@ -99,7 +115,6 @@ public class ItemFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(RecordingItem item);
     }
 }
