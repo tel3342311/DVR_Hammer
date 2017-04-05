@@ -4,6 +4,7 @@ public class Def {
 
     public final static String DVR_PREVIEW_URL = "http://192.168.10.1:8081/?action=stream";
     public final static String DVR_RECORDINGS_URL = "http://192.168.10.1:8080/sda1/MBA-CAM/";
+    public final static String DVR_SYSTEM_MODE_URL = "http://192.168.10.1/system.shtml";
     public final static String DVR_Url = "http://192.168.10.1/%s";
     public final static String DVR_IP = "192.168.10.1";
     //camera setting
@@ -155,4 +156,14 @@ public class Def {
     public final static String TIME_ZONE = "TIME_ZONE";
     public final static String NTPSERVERIP = "NTPSERVERIP";
     public final static String NTPSYNC = "NTPSYNC";
+
+    //Action for HTTP request service
+    public final static String ACTION_GET_ALL_INFO = "com.example.trdcmacpro.dvr_hammer.service.action.GET_ALL";
+    public final static String ACTION_GET_SYS_MODE = "com.example.trdcmacpro.dvr_hammer.service.action.GET_SYS";
+    public final static String ACTION_GET_CAM_MODE = "com.example.trdcmacpro.dvr_hammer.service.action.GET_CAM";
+    public final static String ACTION_GET_INTERNET = "com.example.trdcmacpro.dvr_hammer.service.action.GET_INET";
+    public final static String ACTION_GET_WIRELESS = "com.example.trdcmacpro.dvr_hammer.service.action.GET_WIRELESS";
+    public final static String ACTION_GET_SECURITY = "com.example.trdcmacpro.dvr_hammer.service.action.GET_SECURITY";
+    public final static String ACTION_GET_ADMIN    = "com.example.trdcmacpro.dvr_hammer.service.action.GET_ADMIN";
+
 }

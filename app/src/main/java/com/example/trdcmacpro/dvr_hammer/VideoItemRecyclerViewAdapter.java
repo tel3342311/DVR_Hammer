@@ -8,16 +8,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.trdcmacpro.dvr_hammer.ItemFragment.OnListFragmentInteractionListener;
-import com.example.trdcmacpro.dvr_hammer.dummy.DummyContent.DummyItem;
 import com.example.trdcmacpro.dvr_hammer.util.RecordingItem;
 
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class VideoItemRecyclerViewAdapter extends RecyclerView.Adapter<VideoItemRecyclerViewAdapter.ViewHolder> {
 
     private final List<RecordingItem> mValues;

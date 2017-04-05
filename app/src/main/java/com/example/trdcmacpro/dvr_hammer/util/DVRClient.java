@@ -26,6 +26,8 @@ import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class DVRClient {
@@ -160,6 +162,44 @@ public class DVRClient {
             e.printStackTrace();
         }
     }
+
+    public String getSystemMode() {
+        String mode = "";
+        try {
+            URL url = new URL(Def.DVR_SYSTEM_MODE_URL);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            if (!TextUtils.isEmpty(password)) {
+                urlConnection.setRequestProperty("Authorization", getAuthorizationHeader());
+            }
+
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            urlConnection.setUseCaches(false);
+
+            InputStream is = urlConnection.getInputStream();
+            Document doc = Jsoup.parse(is, "UTF-8", Def.DVR_SYSTEM_MODE_URL);
+            Elements element = doc.getElementsByAttributeValue("language", "JavaScript");
+            Element e = element.first();
+            String data = e.data();
+            Pattern pattern= Pattern.compile("var opmod  = \"(.*)\";");
+            Matcher matcher = pattern.matcher(data);
+
+            if (matcher.find()) {
+                mode = matcher.group(1);
+            }
+            Log.i(TAG, "Get System mode , mode is " + mode);
+            int response = urlConnection.getResponseCode();
+            Log.i(TAG, "Get System mode , Response is " + response);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return mode;
+
+    }
+
     public List<RecordingItem> getRecordingList() {
 
         List<RecordingItem> list = new ArrayList<>();

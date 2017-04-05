@@ -1,13 +1,13 @@
 package com.example.trdcmacpro.dvr_hammer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -24,13 +24,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
-import com.example.trdcmacpro.dvr_hammer.dummy.DummyContent;
+import com.example.trdcmacpro.dvr_hammer.service.DvrInfoService;
 import com.example.trdcmacpro.dvr_hammer.util.DVRClient;
 import com.example.trdcmacpro.dvr_hammer.util.Def;
 import com.example.trdcmacpro.dvr_hammer.util.RecordingItem;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements ItemFragment.OnListFragmentInteractionListener {
 
@@ -83,6 +80,10 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         findViews();
         mDvrClient = new DVRClient("admin", "admin");
         mHandlerTime.postDelayed(HideUIControl, 1500);
+        Intent intent = new Intent();
+        intent.setAction(Def.ACTION_GET_SYS_MODE);
+        intent.setClass(MainActivity.this, DvrInfoService.class);
+        startService(intent);
     }
 
     public Runnable HideUIControl = new Runnable()
