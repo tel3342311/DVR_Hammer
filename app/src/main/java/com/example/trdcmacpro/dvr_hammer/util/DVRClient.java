@@ -25,7 +25,9 @@ import java.net.HttpURLConnection;
 import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -85,9 +87,9 @@ public class DVRClient {
         }
     }
 
-    public String getCameraMode() {
-        return mCameraMode;
-    }
+    //public String getCameraMode() {
+    //    return mCameraMode;
+    //}
 
     public void setCameraMode(String mode) {
 
@@ -166,7 +168,7 @@ public class DVRClient {
     public String getSystemMode() {
         String mode = "";
         try {
-            URL url = new URL(Def.DVR_SYSTEM_MODE_URL);
+            URL url = new URL(String.format(Def.DVR_Url, Def.system_setting));
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             if (!TextUtils.isEmpty(password)) {
                 urlConnection.setRequestProperty("Authorization", getAuthorizationHeader());
@@ -179,10 +181,9 @@ public class DVRClient {
             urlConnection.setUseCaches(false);
 
             InputStream is = urlConnection.getInputStream();
-            Document doc = Jsoup.parse(is, "UTF-8", Def.DVR_SYSTEM_MODE_URL);
+            Document doc = Jsoup.parse(is, "UTF-8", url.toString());
             Elements element = doc.getElementsByAttributeValue("language", "JavaScript");
-            Element e = element.first();
-            String data = e.data();
+            String data = element.first().data();
             Pattern pattern= Pattern.compile("var opmod  = \"(.*)\";");
             Matcher matcher = pattern.matcher(data);
 
@@ -197,7 +198,138 @@ public class DVRClient {
             e.printStackTrace();
         }
         return mode;
+    }
 
+    public String getCameraMode() {
+        String mode = "";
+        try {
+            URL url = new URL(String.format(Def.DVR_Url, Def.camera_setting));
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            if (!TextUtils.isEmpty(password)) {
+                urlConnection.setRequestProperty("Authorization", getAuthorizationHeader());
+            }
+
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            urlConnection.setUseCaches(false);
+
+            InputStream is = urlConnection.getInputStream();
+            Document doc = Jsoup.parse(is, "UTF-8", url.toString());
+            Elements element = doc.getElementsByAttributeValue("language", "JavaScript");
+            String data = element.first().data();
+            Pattern pattern= Pattern.compile("var resol  = \"(.*)\";");
+            Matcher matcher = pattern.matcher(data);
+
+            if (matcher.find()) {
+                mode = matcher.group(1);
+            }
+            Log.i(TAG, "Get Camera mode , mode is " + mode);
+            int response = urlConnection.getResponseCode();
+            Log.i(TAG, "Get Camera mode , Response is " + response);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return mode;
+    }
+
+    public String getRecordingLength() {
+        String length = "";
+        try {
+            URL url = new URL(String.format(Def.DVR_Url, Def.camera_setting));
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            if (!TextUtils.isEmpty(password)) {
+                urlConnection.setRequestProperty("Authorization", getAuthorizationHeader());
+            }
+
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            urlConnection.setUseCaches(false);
+
+            InputStream is = urlConnection.getInputStream();
+            Document doc = Jsoup.parse(is, "UTF-8", url.toString());
+            Elements element = doc.getElementsByAttributeValue("language", "JavaScript");
+            String data = element.first().data();
+            Pattern pattern= Pattern.compile("var clipl  = \"(.*)\";");
+            Matcher matcher = pattern.matcher(data);
+
+            if (matcher.find()) {
+                length = matcher.group(1);
+            }
+            Log.i(TAG, "Get recording length, length is " + length);
+            int response = urlConnection.getResponseCode();
+            Log.i(TAG, "Get recording length , Response is " + response);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return length;
+    }
+
+    public Map<String, String> get3GModemList() {
+        Map<String, String> map = new HashMap<>();
+        try {
+            URL url = new URL(String.format(Def.DVR_Url, Def.net_setting));
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            if (!TextUtils.isEmpty(password)) {
+                urlConnection.setRequestProperty("Authorization", getAuthorizationHeader());
+            }
+
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            urlConnection.setUseCaches(false);
+
+            InputStream is = urlConnection.getInputStream();
+            Document doc = Jsoup.parse(is, "UTF-8", url.toString());
+            Elements elements = doc.select("select[name=Dev3G] > option");
+            for (Element e : elements) {
+                map.put(e.text(), e.val());
+            }
+            Log.i(TAG, "Get 3GModem List, map is " + map.toString());
+            int response = urlConnection.getResponseCode();
+            Log.i(TAG, "Get 3GModem List , Response is " + response);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
+
+    public Map<String, String> getTimeZoneList() {
+        Map<String, String> map = new HashMap<>();
+        try {
+            URL url = new URL(String.format(Def.DVR_Url, Def.adm_setting));
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            if (!TextUtils.isEmpty(password)) {
+                urlConnection.setRequestProperty("Authorization", getAuthorizationHeader());
+            }
+
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            urlConnection.setUseCaches(false);
+
+            InputStream is = urlConnection.getInputStream();
+            Document doc = Jsoup.parse(is, "UTF-8", url.toString());
+            Elements elements = doc.select("select[name=time_zone] > option");
+            for (Element e : elements) {
+                map.put(e.text(), e.val());
+            }
+            Log.i(TAG, "Get Timezone List, map is " + map.toString());
+            int response = urlConnection.getResponseCode();
+            Log.i(TAG, "Get Timezone List , Response is " + response);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return map;
     }
 
     public List<RecordingItem> getRecordingList() {

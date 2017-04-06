@@ -8,6 +8,8 @@ import android.util.Log;
 import com.example.trdcmacpro.dvr_hammer.util.DVRClient;
 import com.example.trdcmacpro.dvr_hammer.util.Def;
 
+import java.util.Map;
+
 public class DvrInfoService extends IntentService {
 
     private static final String TAG = DvrInfoService.class.getName();
@@ -102,11 +104,19 @@ public class DvrInfoService extends IntentService {
     }
 
     private void handleActionGetCamMode(){
+        DVRClient dvrClient = new DVRClient("admin", "admin");
+        String mode = dvrClient.getCameraMode();
+        Log.v(TAG, "[handleActionGetCamMode] Camera Mode is " + mode);
+
+        String length = dvrClient.getRecordingLength();
+        Log.v(TAG, "[handleActionGetCamMode] recording length is " + length);
 
     }
 
     private void handleActionGetInternet(){
-
+        DVRClient dvrClient = new DVRClient("admin", "admin");
+        Map map = dvrClient.get3GModemList();
+        Log.v(TAG, "[handleActionGetInternet] get3GModemList is " + map.toString());
     }
 
     private void handleActionGetWireless(){
@@ -118,7 +128,9 @@ public class DvrInfoService extends IntentService {
     }
 
     private void handleActionGetAdmin(){
-
+        DVRClient dvrClient = new DVRClient("admin", "admin");
+        Map map = dvrClient.getTimeZoneList();
+        Log.v(TAG, "[handleActionGetAdmin] getTimeZoneList is " + map.toString());
     }
 
     @Override

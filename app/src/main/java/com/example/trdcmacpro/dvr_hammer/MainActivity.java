@@ -49,10 +49,12 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             ActionBar actionbar = getSupportActionBar();
+            String mode = "cha";
             switch (item.getItemId()) {
                 case R.id.navigation_preview:
                     mViewPager.setCurrentItem(0);
-                    if (mDvrClient.getCameraMode().equals(Def.FRONT_CAM_MODE)) {
+                    mode = "cha";//mDvrClient.getCameraMode().equals(Def.FRONT_CAM_MODE);
+                    if (mode.equals(Def.FRONT_CAM_MODE)) {
                         actionbar.setTitle(mViewPager.getAdapter().getPageTitle(0) + " 1");
                     } else {
                         actionbar.setTitle(mViewPager.getAdapter().getPageTitle(0) + " 2");
@@ -81,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         mDvrClient = new DVRClient("admin", "admin");
         mHandlerTime.postDelayed(HideUIControl, 1500);
         Intent intent = new Intent();
-        intent.setAction(Def.ACTION_GET_SYS_MODE);
+        intent.setAction(Def.ACTION_GET_ADMIN);
         intent.setClass(MainActivity.this, DvrInfoService.class);
         startService(intent);
     }
@@ -112,7 +114,8 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-        String cameraMode = mDvrClient.getCameraMode();
+
+        String cameraMode = "cha";
         if (cameraMode.equals(Def.FRONT_CAM_MODE)) {
             MenuItem item = menu.findItem(R.id.action_camera_1);
             item.setActionView(null);
