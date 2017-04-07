@@ -1,15 +1,21 @@
 package com.example.trdcmacpro.dvr_hammer;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.trdcmacpro.dvr_hammer.service.DvrInfoService;
 import com.example.trdcmacpro.dvr_hammer.util.DVRClient;
+import com.example.trdcmacpro.dvr_hammer.util.Def;
 import com.example.trdcmacpro.dvr_hammer.util.RecordingItem;
 
 import java.util.List;
@@ -21,7 +27,7 @@ import java.util.List;
  * interface.
  */
 public class ItemFragment extends Fragment {
-
+    private final static String TAG = ItemFragment.class.getName();
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
@@ -29,10 +35,47 @@ public class ItemFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
     private DVRClient mDvrClient;
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
+
+    BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String mode = intent.getStringExtra(Def.EXTRA_GET_SYS_MODE);
+
+            if (mode.equals(Def.STORAGE_MODE)) {
+
+
+            } else {
+                ((MainActivity) getActivity()).showSnackBar("Please change DVR mode to continue.", "Change to Storage mode",mOnSnackBarClickListener);
+            }
+        }
+    };
+
+    private View.OnClickListener mOnSnackBarClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.v(TAG, "snackbar click");
+            setDVRMode();
+        }
+    };
+
+    private void registerBroadcastReceiver() {
+        IntentFilter intentFilter = new IntentFilter(Def.ACTION_GET_SYS_MODE);
+        getActivity().registerReceiver(mBroadcastReceiver, intentFilter);
+    }
+
+    private void unRegisterBroadcastReceiver() {
+        getActivity().unregisterReceiver(mBroadcastReceiver);
+    }
+
+    private void setDVRMode() {
+        Intent intent = new Intent();
+        intent.setAction(Def.ACTION_SET_SYS_MODE);
+        intent.putExtra(Def.EXTRA_SET_SYS_MODE, Def.STORAGE_MODE);
+        intent.setClass(getActivity(), DvrInfoService.class);
+        getContext().startService(intent);
+    }
     public ItemFragment() {
     }
 
@@ -103,5 +146,17 @@ public class ItemFragment extends Fragment {
 
     public interface OnListFragmentInteractionListener {
         void onListFragmentInteraction(RecordingItem item);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerBroadcastReceiver();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        unRegisterBroadcastReceiver();
     }
 }

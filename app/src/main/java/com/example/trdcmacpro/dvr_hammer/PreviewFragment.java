@@ -1,8 +1,12 @@
 package com.example.trdcmacpro.dvr_hammer;
 
 
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,14 +21,11 @@ import android.widget.ImageView;
 
 import com.camera.simplemjpeg.MjpegInputStream;
 import com.camera.simplemjpeg.MjpegView;
+import com.example.trdcmacpro.dvr_hammer.service.DvrInfoService;
 import com.example.trdcmacpro.dvr_hammer.util.Def;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PreviewFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class PreviewFragment extends Fragment {
     private final static String TAG = PreviewFragment.class.getName();
     // TODO: Rename parameter arguments, choose names that match
@@ -39,6 +40,35 @@ public class PreviewFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private static PreviewFragment mFragment;
+
+    BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String mode = intent.getStringExtra(Def.EXTRA_GET_SYS_MODE);
+
+            if (mode.equals(Def.RECORDING_MODE)) {
+                if (!mv.isStreaming()) {
+                    new ReadDVR().execute(Def.DVR_PREVIEW_URL);
+                }
+
+            } else {
+                if (mv.isStreaming()) {
+                    mv.stopPlayback();
+                }
+                ((MainActivity) getActivity()).showSnackBar("Please change DVR mode to continue.", "Change to Preview mode",mOnSnackBarClickListener);
+            }
+        }
+    };
+
+    private View.OnClickListener mOnSnackBarClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.v(TAG, "snackbar click");
+            setDVRMode();
+        }
+    };
 
     public PreviewFragment() {
         // Required empty public constructor
@@ -72,7 +102,6 @@ public class PreviewFragment extends Fragment {
         mv = (MjpegView) view.findViewById(R.id.preview);
         mSnapshot = (FloatingActionButton) view.findViewById(R.id.snapshot);
         mThumbnail = (ImageView) view.findViewById(R.id.thumbnail);
-        new ReadDVR().execute(Def.DVR_PREVIEW_URL);
         setListener();
         return view;
     }
@@ -98,37 +127,79 @@ public class PreviewFragment extends Fragment {
             String uri = MediaStore.Images.Media.insertImage(cr, snapShot(), "", "" );
             Log.d(TAG, "The URI of insert image is " + uri);
             long id = ContentUris.parseId(android.net.Uri.parse(uri));
-            // Wait until MINI_KIND thumbnail is generated.
             Bitmap miniThumb = MediaStore.Images.Thumbnails.getThumbnail(cr, id, MediaStore.Images.Thumbnails.MINI_KIND, null);
             mThumbnail.setImageBitmap(miniThumb);
             mThumbnail.setVisibility(View.VISIBLE);
+
         }
     };
 
     private Bitmap snapShot() {
         return mv.getBitmap();
     }
+
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
+
+    }
+
+    private void checkDVRMode() {
+        Intent intent = new Intent();
+        intent.setAction(Def.ACTION_GET_SYS_MODE);
+        intent.setClass(getActivity(), DvrInfoService.class);
+        getContext().startService(intent);
+    }
+
+    private void setDVRMode() {
+        Intent intent = new Intent();
+        intent.setAction(Def.ACTION_SET_SYS_MODE);
+        intent.putExtra(Def.EXTRA_SET_SYS_MODE, Def.RECORDING_MODE);
+        intent.setClass(getActivity(), DvrInfoService.class);
+        getContext().startService(intent);
+    }
+
+    private void resumeVideo() {
         if (mv != null) {
             if (suspending) {
                 mv.resumePlayback();
                 suspending = false;
             }
         }
-        Log.d(TAG, "onResume called");
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
+    private void pauseVideo() {
         if (mv != null) {
             if (mv.isStreaming()) {
                 mv.stopPlayback();
                 suspending = true;
             }
         }
+    }
+
+    private void registerBroadcastReceiver() {
+        IntentFilter intentFilter = new IntentFilter(Def.ACTION_GET_SYS_MODE);
+        getActivity().registerReceiver(mBroadcastReceiver, intentFilter);
+    }
+
+    private void unRegisterBroadcastReceiver() {
+        getActivity().unregisterReceiver(mBroadcastReceiver);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        registerBroadcastReceiver();
+        checkDVRMode();
+        resumeVideo();
+        Log.d(TAG, "onResume called");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        pauseVideo();
+        unRegisterBroadcastReceiver();
         Log.d(TAG, "OnPause called");
     }
 

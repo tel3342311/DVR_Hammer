@@ -158,10 +158,15 @@ public class Def {
     //Action for HTTP request service
     public final static String ACTION_GET_ALL_INFO = "com.example.trdcmacpro.dvr_hammer.service.action.GET_ALL";
     public final static String ACTION_GET_SYS_MODE = "com.example.trdcmacpro.dvr_hammer.service.action.GET_SYS";
+    public final static String ACTION_SET_SYS_MODE = "com.example.trdcmacpro.dvr_hammer.service.action.SET_SYS";
     public final static String ACTION_GET_CAM_MODE = "com.example.trdcmacpro.dvr_hammer.service.action.GET_CAM";
     public final static String ACTION_GET_INTERNET = "com.example.trdcmacpro.dvr_hammer.service.action.GET_INET";
     public final static String ACTION_GET_WIRELESS = "com.example.trdcmacpro.dvr_hammer.service.action.GET_WIRELESS";
     public final static String ACTION_GET_SECURITY = "com.example.trdcmacpro.dvr_hammer.service.action.GET_SECURITY";
     public final static String ACTION_GET_ADMIN    = "com.example.trdcmacpro.dvr_hammer.service.action.GET_ADMIN";
 
+    //Key for Intent extra
+    public final static String EXTRA_GET_SYS_MODE = "com.example.trdcmacpro.dvr_hammer.service.extra.GET_SYS";
+    public final static String EXTRA_SET_SYS_MODE = "com.example.trdcmacpro.dvr_hammer.service.extra.SET_SYS";
+    public final static String EXTRA_GET_CAM_MODE = "com.example.trdcmacpro.dvr_hammer.service.extra.GET_CAM";
 }

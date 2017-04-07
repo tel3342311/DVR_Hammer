@@ -1,15 +1,15 @@
 package com.example.trdcmacpro.dvr_hammer;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.FragmentManager;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -24,7 +24,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
-import com.example.trdcmacpro.dvr_hammer.service.DvrInfoService;
 import com.example.trdcmacpro.dvr_hammer.util.DVRClient;
 import com.example.trdcmacpro.dvr_hammer.util.Def;
 import com.example.trdcmacpro.dvr_hammer.util.RecordingItem;
@@ -42,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     private View loadingIndicator;
     private Handler mHandlerTime = new Handler();
     private boolean isTimerEnable = true;
+    private String mCameraMode = "chb";
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -49,11 +49,10 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             ActionBar actionbar = getSupportActionBar();
-            String mode = "cha";
+            String mode = mCameraMode;
             switch (item.getItemId()) {
                 case R.id.navigation_preview:
                     mViewPager.setCurrentItem(0);
-                    mode = "cha";//mDvrClient.getCameraMode().equals(Def.FRONT_CAM_MODE);
                     if (mode.equals(Def.FRONT_CAM_MODE)) {
                         actionbar.setTitle(mViewPager.getAdapter().getPageTitle(0) + " 1");
                     } else {
@@ -82,10 +81,6 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         findViews();
         mDvrClient = new DVRClient("admin", "admin");
         mHandlerTime.postDelayed(HideUIControl, 1500);
-        Intent intent = new Intent();
-        intent.setAction(Def.ACTION_GET_ADMIN);
-        intent.setClass(MainActivity.this, DvrInfoService.class);
-        startService(intent);
     }
 
     public Runnable HideUIControl = new Runnable()
@@ -115,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
 
-        String cameraMode = "cha";
+        String cameraMode = mCameraMode;
         if (cameraMode.equals(Def.FRONT_CAM_MODE)) {
             MenuItem item = menu.findItem(R.id.action_camera_1);
             item.setActionView(null);
@@ -153,11 +148,13 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
                 break;
         }
 
+        //TODO update this thread by calling service
         new Thread() {
             @Override
             public void run() {
                 super.run();
                 mDvrClient.setCameraMode(mode);
+                mCameraMode = mDvrClient.getCameraMode();
                 invalidateOptionsMenu();
             }
         }.start();
@@ -182,6 +179,18 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         }
         showMenu = !showMenu;
     }
+
+    public void showSnackBar(String message, String action,  View.OnClickListener onSnackBarClickListener) {
+
+        Snackbar snack = Snackbar.make(findViewById(R.id.container), message, Snackbar.LENGTH_LONG);
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) snack.getView().getLayoutParams();
+        int bottomMargin = (showMenu) ? mBottomMenu.getHeight() : 0;
+        params.setMargins(0, 0, 0, bottomMargin);
+        snack.getView().setLayoutParams(params);
+        snack.setAction(action, onSnackBarClickListener);
+        snack.show();
+    }
+
     private ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
 
         private int currentPosition = 0;
@@ -194,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         public void onPageSelected(int position) {
             currentPosition = position;
             Log.d(TAG, "Current position of Fragment is " + currentPosition);
+
         }
 
         @Override

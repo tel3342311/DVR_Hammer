@@ -15,6 +15,7 @@ public class DvrInfoService extends IntentService {
     private static final String TAG = DvrInfoService.class.getName();
     private static final String ACTION_GET_ALL_INFO = Def.ACTION_GET_ALL_INFO;
     private static final String ACTION_GET_SYS_MODE = Def.ACTION_GET_SYS_MODE;
+    private static final String ACTION_SET_SYS_MODE = Def.ACTION_SET_SYS_MODE;
     private static final String ACTION_GET_CAM_MODE = Def.ACTION_GET_CAM_MODE;
     private static final String ACTION_GET_INTERNET = Def.ACTION_GET_INTERNET;
     private static final String ACTION_GET_WIRELESS = Def.ACTION_GET_WIRELESS;
@@ -79,6 +80,9 @@ public class DvrInfoService extends IntentService {
                 handleActionGetAllInfo();
             } else if (ACTION_GET_SYS_MODE.equals(action)) {
                 handleActionGetSysInfo();
+            } else if (ACTION_SET_SYS_MODE.equals(action)) {
+                String mode = intent.getStringExtra(Def.EXTRA_SET_SYS_MODE);
+                handleActionSetSysInfo(mode);
             } else if (ACTION_GET_CAM_MODE.equals(action)) {
                 handleActionGetCamMode();
             } else if (ACTION_GET_INTERNET.equals(action)) {
@@ -101,13 +105,28 @@ public class DvrInfoService extends IntentService {
         DVRClient dvrClient = new DVRClient("admin", "admin");
         String mode = dvrClient.getSystemMode();
         Log.v(TAG, "[handleActionGetSysInfo] sys mode is " + mode);
+        Intent intent = new Intent(Def.ACTION_GET_SYS_MODE);
+        intent.putExtra(Def.EXTRA_GET_SYS_MODE, mode);
+        sendBroadcast(intent);
+    }
+
+    private void handleActionSetSysInfo(String mode) {
+        DVRClient dvrClient = new DVRClient("admin", "admin");
+        dvrClient.setSystemMode(mode);
+        Log.v(TAG, "[handleActionSetSysInfo] sys mode is " + mode);
+        Intent intent = new Intent(Def.ACTION_GET_SYS_MODE);
+        intent.putExtra(Def.EXTRA_GET_SYS_MODE, mode);
+        sendBroadcast(intent);
     }
 
     private void handleActionGetCamMode(){
         DVRClient dvrClient = new DVRClient("admin", "admin");
         String mode = dvrClient.getCameraMode();
         Log.v(TAG, "[handleActionGetCamMode] Camera Mode is " + mode);
-
+        Intent intent = new Intent(Def.ACTION_GET_CAM_MODE);
+        intent.putExtra(Def.EXTRA_GET_CAM_MODE, mode);
+        sendBroadcast(intent);
+        //TODO reduce query times
         String length = dvrClient.getRecordingLength();
         Log.v(TAG, "[handleActionGetCamMode] recording length is " + length);
 
