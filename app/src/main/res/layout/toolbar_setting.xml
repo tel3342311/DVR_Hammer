@@ -9,7 +9,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left|center_vertical"
-        android:src="@drawable/setting_cancel"/>
+        android:src="@drawable/setting_cancel"
+        android:visibility="invisible"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,6 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|center_vertical"
-        android:src="@drawable/setting_ok"/>
+        android:src="@drawable/setting_ok"
+        android:visibility="invisible"/>
 
 </android.support.v7.widget.Toolbar>
