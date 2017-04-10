@@ -1,6 +1,7 @@
 package com.example.trdcmacpro.dvr_hammer;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -35,22 +36,15 @@ public class ItemFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
     private DVRClient mDvrClient;
+    private static ItemFragment mFragment;
+    public void onSysModeChange(String mode) {
+        if (mode.equals(Def.STORAGE_MODE)) {
 
-    BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            String mode = intent.getStringExtra(Def.EXTRA_GET_SYS_MODE);
-
-            if (mode.equals(Def.STORAGE_MODE)) {
-
-
-            } else {
-                ((MainActivity) getActivity()).showSnackBar("Please change DVR mode to continue.", "Change to Storage mode",mOnSnackBarClickListener);
-            }
+        } else {
+            ((MainActivity) getActivity()).showSnackBar("Please change DVR mode to continue.", "Change to Storage mode", mOnSnackBarClickListener);
         }
-    };
+    }
+
 
     private View.OnClickListener mOnSnackBarClickListener = new View.OnClickListener() {
         @Override
@@ -60,15 +54,6 @@ public class ItemFragment extends Fragment {
         }
     };
 
-    private void registerBroadcastReceiver() {
-        IntentFilter intentFilter = new IntentFilter(Def.ACTION_GET_SYS_MODE);
-        getActivity().registerReceiver(mBroadcastReceiver, intentFilter);
-    }
-
-    private void unRegisterBroadcastReceiver() {
-        getActivity().unregisterReceiver(mBroadcastReceiver);
-    }
-
     private void setDVRMode() {
         Intent intent = new Intent();
         intent.setAction(Def.ACTION_SET_SYS_MODE);
@@ -76,17 +61,27 @@ public class ItemFragment extends Fragment {
         intent.setClass(getActivity(), DvrInfoService.class);
         getContext().startService(intent);
     }
+
+    private void checkDVRMode() {
+        Intent intent = new Intent();
+        intent.setAction(Def.ACTION_GET_SYS_MODE);
+        intent.setClass(getActivity(), DvrInfoService.class);
+        getContext().startService(intent);
+    }
+
     public ItemFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static ItemFragment newInstance(int columnCount) {
-        ItemFragment fragment = new ItemFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
+        if (mFragment == null) {
+            mFragment = new ItemFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_COLUMN_COUNT, columnCount);
+            mFragment.setArguments(args);
+        }
+        return mFragment;
     }
 
     @Override
@@ -149,14 +144,8 @@ public class ItemFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        registerBroadcastReceiver();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        unRegisterBroadcastReceiver();
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG,"onStart called");
     }
 }

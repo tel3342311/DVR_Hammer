@@ -3,6 +3,7 @@ package com.camera.simplemjpeg;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -53,6 +54,16 @@ public class MjpegInputStream extends DataInputStream {
             URL url = new URL(surl);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             return new MjpegInputStream(urlConnection.getInputStream());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static MjpegInputStream read(InputStream is) {
+        try {
+            return new MjpegInputStream(is);
         } catch (Exception e) {
             e.printStackTrace();
         }

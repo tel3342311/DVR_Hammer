@@ -18,12 +18,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.camera.simplemjpeg.MjpegInputStream;
 import com.camera.simplemjpeg.MjpegView;
 import com.example.trdcmacpro.dvr_hammer.service.DvrInfoService;
 import com.example.trdcmacpro.dvr_hammer.util.Def;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 
 public class PreviewFragment extends Fragment {
@@ -33,7 +39,7 @@ public class PreviewFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private MjpegView mv;
-    private FloatingActionButton mSnapshot;
+    private ImageView mSnapshot;
     private ImageView mThumbnail;
     private boolean suspending;
     // TODO: Rename and change types of parameters
@@ -41,26 +47,20 @@ public class PreviewFragment extends Fragment {
     private String mParam2;
     private static PreviewFragment mFragment;
 
-    BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            String mode = intent.getStringExtra(Def.EXTRA_GET_SYS_MODE);
-
-            if (mode.equals(Def.RECORDING_MODE)) {
-                if (!mv.isStreaming()) {
-                    new ReadDVR().execute(Def.DVR_PREVIEW_URL);
-                }
-
-            } else {
-                if (mv.isStreaming()) {
-                    mv.stopPlayback();
-                }
-                ((MainActivity) getActivity()).showSnackBar("Please change DVR mode to continue.", "Change to Preview mode",mOnSnackBarClickListener);
+    public void onSysModeChange(String mode) {
+        if (mode.equals(Def.RECORDING_MODE)) {
+            if (!mv.isStreaming()) {
+                new PreviewFragment.ReadDVR().execute(Def.DVR_PREVIEW_URL);
             }
+
+        } else {
+            if (mv.isStreaming()) {
+                mv.stopPlayback();
+            }
+            ((MainActivity) getActivity()).showSnackBar("Please change DVR mode to continue.", "Change to Preview mode",mOnSnackBarClickListener);
         }
-    };
+    }
 
     private View.OnClickListener mOnSnackBarClickListener = new View.OnClickListener() {
         @Override
@@ -100,7 +100,7 @@ public class PreviewFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_preview, container, false);
         mv = (MjpegView) view.findViewById(R.id.preview);
-        mSnapshot = (FloatingActionButton) view.findViewById(R.id.snapshot);
+        mSnapshot = (ImageView) view.findViewById(R.id.snapshot);
         mThumbnail = (ImageView) view.findViewById(R.id.thumbnail);
         setListener();
         return view;
@@ -177,19 +177,9 @@ public class PreviewFragment extends Fragment {
         }
     }
 
-    private void registerBroadcastReceiver() {
-        IntentFilter intentFilter = new IntentFilter(Def.ACTION_GET_SYS_MODE);
-        getActivity().registerReceiver(mBroadcastReceiver, intentFilter);
-    }
-
-    private void unRegisterBroadcastReceiver() {
-        getActivity().unregisterReceiver(mBroadcastReceiver);
-    }
-
     @Override
     public void onResume() {
         super.onResume();
-        registerBroadcastReceiver();
         checkDVRMode();
         resumeVideo();
         Log.d(TAG, "onResume called");
@@ -199,7 +189,6 @@ public class PreviewFragment extends Fragment {
     public void onPause() {
         super.onPause();
         pauseVideo();
-        unRegisterBroadcastReceiver();
         Log.d(TAG, "OnPause called");
     }
 
@@ -219,17 +208,33 @@ public class PreviewFragment extends Fragment {
 
     public class ReadDVR extends AsyncTask<String, Void, MjpegInputStream> {
         protected MjpegInputStream doInBackground(String... url) {
-            return MjpegInputStream.read(url[0]);
+
+            try {
+                URL _url = new URL(url[0]);
+                HttpURLConnection urlConnection = (HttpURLConnection) _url.openConnection();
+                InputStream is = urlConnection.getInputStream();
+                int c = is.read();
+                if (is == null) {
+                    return null;
+                }
+                return MjpegInputStream.read(is);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
         protected void onPostExecute(MjpegInputStream result) {
-            mv.setSource(result);
             if (result != null) {
+                mv.setSource(result);
                 result.setSkip(1);
+                mv.setDisplayMode(MjpegView.SIZE_FULLSCREEN);
+                mv.showFps(true);
             } else {
+                Toast.makeText(getContext(),"Fail to open preview URL", Toast.LENGTH_LONG).show();
             }
-            mv.setDisplayMode(MjpegView.SIZE_FULLSCREEN);
-            mv.showFps(true);
         }
     }
 }

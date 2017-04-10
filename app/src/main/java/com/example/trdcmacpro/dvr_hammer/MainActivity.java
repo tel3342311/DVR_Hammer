@@ -1,18 +1,18 @@
 package com.example.trdcmacpro.dvr_hammer;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,7 +22,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.trdcmacpro.dvr_hammer.util.DVRClient;
 import com.example.trdcmacpro.dvr_hammer.util.Def;
@@ -33,8 +35,14 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     private final static String TAG = MainActivity.class.getName();
     private DVRFragmentAdapter mAdapter;
     private ViewPager mViewPager;
-    private Toolbar mToolBar;
-    private BottomNavigationView mBottomMenu;
+    private Toolbar mToolBarPreview;
+    private Toolbar mToolBarRecordings;
+    private Toolbar mToolBarSetting;
+    private TextView mTitleView;
+    private View mBottomMenu;
+    private ImageView mPreview;
+    private ImageView mRecordings;
+    private ImageView mSetting;
     private boolean showMenu = true;
     private DVRClient mDvrClient;
     private int PAGE_COUNT = 3;
@@ -43,42 +51,29 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     private boolean isTimerEnable = true;
     private String mCameraMode = "chb";
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
 
         @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            ActionBar actionbar = getSupportActionBar();
-            String mode = mCameraMode;
-            switch (item.getItemId()) {
-                case R.id.navigation_preview:
-                    mViewPager.setCurrentItem(0);
-                    if (mode.equals(Def.FRONT_CAM_MODE)) {
-                        actionbar.setTitle(mViewPager.getAdapter().getPageTitle(0) + " 1");
-                    } else {
-                        actionbar.setTitle(mViewPager.getAdapter().getPageTitle(0) + " 2");
-                    }
-                    return true;
-                case R.id.navigation_storage:
-                    mViewPager.setCurrentItem(1);
-                    actionbar.setTitle(mViewPager.getAdapter().getPageTitle(1));
-                    return true;
-                case R.id.navigation_setting:
-                    mViewPager.setCurrentItem(2);
-                    actionbar.setTitle(mViewPager.getAdapter().getPageTitle(2));
-                    return true;
-            }
-            return false;
-        }
+        public void onReceive(Context context, Intent intent) {
 
+            String mode = intent.getStringExtra(Def.EXTRA_GET_SYS_MODE);
+
+            Fragment frag = mAdapter.getItem(mViewPager.getCurrentItem());
+            if (frag instanceof PreviewFragment) {
+                ((PreviewFragment) frag).onSysModeChange(mode);
+            } else if (frag instanceof ItemFragment) {
+                ((ItemFragment) frag).onSysModeChange(mode);
+            }
+        }
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle("Camera 1");
         findViews();
+        setListener();
+        mTitleView.setText("Camera 1");
         mDvrClient = new DVRClient("admin", "admin");
         mHandlerTime.postDelayed(HideUIControl, 1500);
     }
@@ -89,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
 
             if (showMenu) {
                 mBottomMenu.setVisibility(View.GONE);
-                mToolBar.setVisibility(View.GONE);
+                mToolBarPreview.setVisibility(View.GONE);
                 showMenu = false;
             }
 
@@ -97,15 +92,28 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     };
 
     private void findViews() {
-        mToolBar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolBar);
+        mToolBarPreview = (Toolbar) findViewById(R.id.toolbar_preview);
+        mToolBarRecordings = (Toolbar) findViewById(R.id.toolbar_recordings);
+        mToolBarSetting = (Toolbar) findViewById(R.id.toolbar_setting);
+
+        mTitleView = (TextView) findViewById(R.id.toolbar_title);
+        setSupportActionBar(mToolBarPreview);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         mViewPager = (ViewPager) findViewById(R.id.content);
         setupViewPager(mViewPager);
-        mBottomMenu = (BottomNavigationView) findViewById(R.id.navigation);
-        mBottomMenu.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        mBottomMenu = findViewById(R.id.bottombar);
+        mPreview = (ImageView)findViewById(R.id.preview_icon);
+        mRecordings = (ImageView)findViewById(R.id.recordings_icon);
+        mSetting = (ImageView)findViewById(R.id.setting_icon);
+        mPreview.setSelected(true);
         loadingIndicator = buildLoadingIndicator(this);
     }
 
+    private void setListener() {
+        mPreview.setOnClickListener(mOnBottomIconClickListener);
+        mRecordings.setOnClickListener(mOnBottomIconClickListener);
+        mSetting.setOnClickListener(mOnBottomIconClickListener);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
@@ -137,11 +145,11 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         switch (item.getItemId()) {
             case R.id.action_camera_1:
                 mode = Def.FRONT_CAM_MODE;
-                getSupportActionBar().setTitle(mViewPager.getAdapter().getPageTitle(0) + " 1");
+                mTitleView.setText(mViewPager.getAdapter().getPageTitle(0) + " 1");
                 break;
             case R.id.action_camera_2:
                 mode = Def.REAR_CAM_MODE;
-                getSupportActionBar().setTitle(mViewPager.getAdapter().getPageTitle(0) + " 2");
+                mTitleView.setText(mViewPager.getAdapter().getPageTitle(0) + " 2");
                 break;
             default:
                 mode = Def.FRONT_CAM_MODE;
@@ -172,10 +180,10 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     public void toggleMenu() {
         if (showMenu) {
             mBottomMenu.setVisibility(View.GONE);
-            mToolBar.setVisibility(View.GONE);
+            mToolBarPreview.setVisibility(View.GONE);
         } else {
             mBottomMenu.setVisibility(View.VISIBLE);
-            mToolBar.setVisibility(View.VISIBLE);
+            mToolBarPreview.setVisibility(View.VISIBLE);
         }
         showMenu = !showMenu;
     }
@@ -184,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
 
         Snackbar snack = Snackbar.make(findViewById(R.id.container), message, Snackbar.LENGTH_LONG);
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) snack.getView().getLayoutParams();
-        int bottomMargin = (showMenu) ? mBottomMenu.getHeight() : 0;
+        int bottomMargin = (showMenu) ? 56 : 0;
         params.setMargins(0, 0, 0, bottomMargin);
         snack.getView().setLayoutParams(params);
         snack.setAction(action, onSnackBarClickListener);
@@ -264,4 +272,55 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
             return super.getPageTitle(position);
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter(Def.ACTION_GET_SYS_MODE);
+        registerReceiver(mBroadcastReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mBroadcastReceiver);
+    }
+
+    private View.OnClickListener mOnBottomIconClickListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            mPreview.setSelected(false);
+            mRecordings.setSelected(false);
+            mSetting.setSelected(false);
+            mToolBarPreview.setVisibility(View.INVISIBLE);
+            mToolBarRecordings.setVisibility(View.INVISIBLE);
+            mToolBarSetting.setVisibility(View.INVISIBLE);
+            String mode = mCameraMode;
+            switch (v.getId()) {
+                case R.id.preview_icon:
+                    mViewPager.setCurrentItem(0);
+                    mToolBarPreview.setVisibility(View.VISIBLE);
+                    if (mode.equals(Def.FRONT_CAM_MODE)) {
+                        mTitleView.setText(mViewPager.getAdapter().getPageTitle(0) + " 1");
+                    } else {
+                        mTitleView.setText(mViewPager.getAdapter().getPageTitle(0) + " 2");
+                    }
+                    mPreview.setSelected(true);
+                    return ;
+                case R.id.recordings_icon:
+                    mViewPager.setCurrentItem(1);
+                    mToolBarRecordings.setVisibility(View.VISIBLE);
+                    mTitleView.setText(mViewPager.getAdapter().getPageTitle(1));
+                    mRecordings.setSelected(true);
+                    return ;
+                case R.id.setting_icon:
+                    mViewPager.setCurrentItem(2);
+                    mToolBarSetting.setVisibility(View.VISIBLE);
+                    mTitleView.setText(mViewPager.getAdapter().getPageTitle(2));
+                    mSetting.setSelected(true);
+                    return;
+            }
+        }
+    };
 }
