@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     private Handler mHandlerTime = new Handler();
     private boolean isTimerEnable = true;
     private String mCameraMode = "chb";
+    private ImageView mCamera1;
+    private ImageView mCamera2;
 
     BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
 
@@ -73,7 +75,12 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         setContentView(R.layout.activity_main);
         findViews();
         setListener();
+        setSupportActionBar(mToolBarPreview);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        setupViewPager(mViewPager);
         mTitleView.setText("Camera 1");
+        mCamera2.setVisibility(View.VISIBLE);
+        mPreview.setSelected(true);
         mDvrClient = new DVRClient("admin", "admin");
         mHandlerTime.postDelayed(HideUIControl, 1500);
     }
@@ -97,36 +104,72 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         mToolBarSetting = (Toolbar) findViewById(R.id.toolbar_setting);
 
         mTitleView = (TextView) findViewById(R.id.toolbar_title);
-        setSupportActionBar(mToolBarPreview);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
         mViewPager = (ViewPager) findViewById(R.id.content);
-        setupViewPager(mViewPager);
+
         mBottomMenu = findViewById(R.id.bottombar);
         mPreview = (ImageView)findViewById(R.id.preview_icon);
         mRecordings = (ImageView)findViewById(R.id.recordings_icon);
         mSetting = (ImageView)findViewById(R.id.setting_icon);
-        mPreview.setSelected(true);
-        loadingIndicator = buildLoadingIndicator(this);
+
+        loadingIndicator =  findViewById(R.id.icon_loading);
+
+        mCamera1 = (ImageView) findViewById(R.id.icon_camera_1);
+        mCamera2 = (ImageView) findViewById(R.id.icon_camera_2);
+
     }
 
     private void setListener() {
         mPreview.setOnClickListener(mOnBottomIconClickListener);
         mRecordings.setOnClickListener(mOnBottomIconClickListener);
         mSetting.setOnClickListener(mOnBottomIconClickListener);
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
 
-        String cameraMode = mCameraMode;
+        mCamera1.setOnClickListener(mOnCameraClickListener);
+        mCamera2.setOnClickListener(mOnCameraClickListener);
+    }
+
+    private View.OnClickListener mOnCameraClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            final String mode;
+            loadingIndicator.setVisibility(View.VISIBLE);
+            switch (view.getId()) {
+                case R.id.icon_camera_1:
+                    mode = Def.FRONT_CAM_MODE;
+                    mCamera1.setVisibility(View.INVISIBLE);
+                    mTitleView.setText(mViewPager.getAdapter().getPageTitle(0) + " 1");
+                    break;
+                case R.id.icon_camera_2:
+                    mode = Def.REAR_CAM_MODE;
+                    mCamera2.setVisibility(View.INVISIBLE);
+                    mTitleView.setText(mViewPager.getAdapter().getPageTitle(0) + " 2");
+                    break;
+                default:
+                    mode = Def.FRONT_CAM_MODE;
+                    break;
+            }
+            new Thread() {
+                @Override
+                public void run() {
+                    super.run();
+                    mDvrClient.setCameraMode(mode);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateCameraIcon(mode);
+                        }
+                    });
+                }
+            }.start();
+        }
+    };
+
+    private boolean updateCameraIcon(String cameraMode) {
+
+        loadingIndicator.setVisibility(View.INVISIBLE);
         if (cameraMode.equals(Def.FRONT_CAM_MODE)) {
-            MenuItem item = menu.findItem(R.id.action_camera_1);
-            item.setActionView(null);
-            item.setVisible(false);
+            mCamera2.setVisibility(View.VISIBLE);
         } else if (cameraMode.equals(Def.REAR_CAM_MODE)) {
-            MenuItem item = menu.findItem(R.id.action_camera_2);
-            item.setActionView(null);
-            item.setVisible(false);
+            mCamera1.setVisibility(View.VISIBLE);
         }
         return true;
     }
@@ -135,40 +178,6 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     public void onListFragmentInteraction(RecordingItem item) {
 
         Log.i(TAG, "recording item clicked : " + item.name);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        final String mode;
-        Log.d(TAG, "onOptionsItemSelected called");
-        item.setActionView(loadingIndicator);
-        switch (item.getItemId()) {
-            case R.id.action_camera_1:
-                mode = Def.FRONT_CAM_MODE;
-                mTitleView.setText(mViewPager.getAdapter().getPageTitle(0) + " 1");
-                break;
-            case R.id.action_camera_2:
-                mode = Def.REAR_CAM_MODE;
-                mTitleView.setText(mViewPager.getAdapter().getPageTitle(0) + " 2");
-                break;
-            default:
-                mode = Def.FRONT_CAM_MODE;
-                break;
-        }
-
-        //TODO update this thread by calling service
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                mDvrClient.setCameraMode(mode);
-                mCameraMode = mDvrClient.getCameraMode();
-                invalidateOptionsMenu();
-            }
-        }.start();
-
-
-        return super.onOptionsItemSelected(item);
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -196,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         params.setMargins(0, 0, 0, bottomMargin);
         snack.getView().setLayoutParams(params);
         snack.setAction(action, onSnackBarClickListener);
-        snack.show();
+        //snack.show();
     }
 
     private ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -219,23 +228,6 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
 
         }
     };
-
-    public static int dpToPx(Context ctx, int val) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                val, ctx.getResources().getDisplayMetrics());
-    }
-
-    public static View buildLoadingIndicator(Context ctx) {
-        boolean large = (ctx.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) > Configuration.SCREENLAYOUT_SIZE_NORMAL;
-        boolean fresh = Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1;
-        int px = (large && fresh) ? 64 : 56;
-        FrameLayout fl = new FrameLayout(ctx);
-        fl.setMinimumWidth(dpToPx(ctx, px));
-        ProgressBar pb = new ProgressBar(ctx);
-        px = dpToPx(ctx, 32);
-        fl.addView(pb, new FrameLayout.LayoutParams(px, px, Gravity.CENTER));
-        return fl;
-    }
 
     public class DVRFragmentAdapter extends FragmentPagerAdapter {
 

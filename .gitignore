@@ -257,3 +257,8 @@ build/android-profile/profile-2017-03-28-00-07-18-654.rawproto
 build/android-profile/profile-2017-03-28-00-08-46-094.rawproto
 DVR_Hammer.iml
 mjpeg/mjpeg.iml
+.idea
+build
+._.gitignore
+.gradle
+app.iml
