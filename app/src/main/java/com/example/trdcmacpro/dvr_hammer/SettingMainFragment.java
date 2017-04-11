@@ -44,7 +44,6 @@ public class SettingMainFragment extends Fragment {
         return view;
     }
 
-
     public ViewPager getViewPager() {
         return mViewPager;
     }

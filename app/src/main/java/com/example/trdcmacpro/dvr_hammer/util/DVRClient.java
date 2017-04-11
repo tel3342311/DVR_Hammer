@@ -82,6 +82,7 @@ public class DVRClient {
 
             int response = urlConnection.getResponseCode();
             Log.i(TAG, "Set DVR mode to " + mode + ", Response is " + response);
+            urlConnection.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -124,6 +125,7 @@ public class DVRClient {
             int response = urlConnection.getResponseCode();
             Log.i(TAG, "Set Camera mode to " + mode + ", Response is " + response);
             mCameraMode = mode;
+            urlConnection.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -159,7 +161,7 @@ public class DVRClient {
 
             int response = urlConnection.getResponseCode();
             Log.i(TAG, "Set recording length to " + length + ", Response is " + response);
-
+            urlConnection.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -182,6 +184,7 @@ public class DVRClient {
 
             InputStream is = urlConnection.getInputStream();
             Document doc = Jsoup.parse(is, "UTF-8", url.toString());
+
             Elements element = doc.getElementsByAttributeValue("language", "JavaScript");
             String data = element.first().data();
             Pattern pattern= Pattern.compile("var opmod  = \"(.*)\";");
@@ -191,8 +194,8 @@ public class DVRClient {
                 mode = matcher.group(1);
             }
             Log.i(TAG, "Get System mode , mode is " + mode);
-            int response = urlConnection.getResponseCode();
-            Log.i(TAG, "Get System mode , Response is " + response);
+            is.close();
+            urlConnection.disconnect();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -228,7 +231,8 @@ public class DVRClient {
             Log.i(TAG, "Get Camera mode , mode is " + mode);
             int response = urlConnection.getResponseCode();
             Log.i(TAG, "Get Camera mode , Response is " + response);
-
+            is.close();
+            urlConnection.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -263,7 +267,8 @@ public class DVRClient {
             Log.i(TAG, "Get recording length, length is " + length);
             int response = urlConnection.getResponseCode();
             Log.i(TAG, "Get recording length , Response is " + response);
-
+            is.close();
+            urlConnection.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -294,6 +299,8 @@ public class DVRClient {
             Log.i(TAG, "Get 3GModem List, map is " + map.toString());
             int response = urlConnection.getResponseCode();
             Log.i(TAG, "Get 3GModem List , Response is " + response);
+            is.close();
+            urlConnection.disconnect();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -325,6 +332,8 @@ public class DVRClient {
             Log.i(TAG, "Get Timezone List, map is " + map.toString());
             int response = urlConnection.getResponseCode();
             Log.i(TAG, "Get Timezone List , Response is " + response);
+            is.close();
+            urlConnection.disconnect();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -367,7 +376,7 @@ public class DVRClient {
             is.close();
             int response = urlConnection.getResponseCode();
             Log.i(TAG, "Get recording clips , Response is " + response);
-
+            urlConnection.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
         }

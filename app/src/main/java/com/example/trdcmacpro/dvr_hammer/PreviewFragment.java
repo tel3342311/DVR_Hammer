@@ -123,14 +123,27 @@ public class PreviewFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            ContentResolver cr = getContext().getContentResolver();
-            String uri = MediaStore.Images.Media.insertImage(cr, snapShot(), "", "" );
-            Log.d(TAG, "The URI of insert image is " + uri);
-            long id = ContentUris.parseId(android.net.Uri.parse(uri));
-            Bitmap miniThumb = MediaStore.Images.Thumbnails.getThumbnail(cr, id, MediaStore.Images.Thumbnails.MINI_KIND, null);
-            mThumbnail.setImageBitmap(miniThumb);
-            mThumbnail.setVisibility(View.VISIBLE);
-
+            new Thread() {
+                @Override
+                public void run() {
+                    super.run();
+                    ContentResolver cr = getContext().getContentResolver();
+                    String uri = MediaStore.Images.Media.insertImage(cr, snapShot(), "", "" );
+                    Log.d(TAG, "The URI of insert image is " + uri);
+                    if (uri == null) {
+                        return ;
+                    }
+                    long id = ContentUris.parseId(android.net.Uri.parse(uri));
+                    final Bitmap miniThumb = MediaStore.Images.Thumbnails.getThumbnail(cr, id, MediaStore.Images.Thumbnails.MINI_KIND, null);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mThumbnail.setImageBitmap(miniThumb);
+                            mThumbnail.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
+            }.start();
         }
     };
 

@@ -4,8 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
@@ -16,14 +14,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.trdcmacpro.dvr_hammer.util.DVRClient;
@@ -50,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     private Handler mHandlerTime = new Handler();
     private boolean isTimerEnable = true;
     private String mCameraMode = "chb";
+    private String mSystemMode = Def.RECORDING_MODE;
     private ImageView mCamera1;
     private ImageView mCamera2;
 
@@ -59,13 +55,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         public void onReceive(Context context, Intent intent) {
 
             String mode = intent.getStringExtra(Def.EXTRA_GET_SYS_MODE);
-
-            Fragment frag = mAdapter.getItem(mViewPager.getCurrentItem());
-            if (frag instanceof PreviewFragment) {
-                ((PreviewFragment) frag).onSysModeChange(mode);
-            } else if (frag instanceof ItemFragment) {
-                ((ItemFragment) frag).onSysModeChange(mode);
-            }
+            mSystemMode = mode;
         }
     };
 
@@ -83,6 +73,13 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         mPreview.setSelected(true);
         mDvrClient = new DVRClient("admin", "admin");
         mHandlerTime.postDelayed(HideUIControl, 1500);
+
+//        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+//                .detectAll()
+//                .penaltyLog()
+//                .penaltyDeath()
+//                .build());
+
     }
 
     public Runnable HideUIControl = new Runnable()
@@ -91,7 +88,42 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
 
             if (showMenu) {
                 mBottomMenu.setVisibility(View.GONE);
-                mToolBarPreview.setVisibility(View.GONE);
+                Animation animBottom = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bottom_hide);
+                animBottom.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        mBottomMenu.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.toolbar_hide);
+                anim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                        mToolBarPreview.setVisibility(View.INVISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                mBottomMenu.startAnimation(animBottom);
+                mToolBarPreview.startAnimation(anim);
                 showMenu = false;
             }
 
@@ -190,9 +222,11 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         if (showMenu) {
             mBottomMenu.setVisibility(View.GONE);
             mToolBarPreview.setVisibility(View.GONE);
+            mHandlerTime.removeCallbacks(HideUIControl);
         } else {
             mBottomMenu.setVisibility(View.VISIBLE);
             mToolBarPreview.setVisibility(View.VISIBLE);
+            mHandlerTime.postDelayed(HideUIControl, 1500);
         }
         showMenu = !showMenu;
     }
@@ -220,6 +254,17 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         public void onPageSelected(int position) {
             currentPosition = position;
             Log.d(TAG, "Current position of Fragment is " + currentPosition);
+            if (position == 0) {
+                mToolBarPreview.setVisibility(View.VISIBLE);
+                mHandlerTime.postDelayed(HideUIControl,1500);
+            } else if (position == 1) {
+                mToolBarRecordings.setVisibility(View.VISIBLE);
+                mHandlerTime.removeCallbacks(HideUIControl);
+            } else if (position == 2) {
+                mToolBarSetting.setVisibility(View.VISIBLE);
+                mHandlerTime.removeCallbacks(HideUIControl);
+            }
+            mBottomMenu.setVisibility(View.VISIBLE);
 
         }
 
