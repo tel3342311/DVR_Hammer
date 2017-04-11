@@ -41,7 +41,6 @@ public class SettingMainFragment extends Fragment {
         mViewPager = (ViewPager) view.findViewById(R.id.content);
         mAdapter = new SettingFragmentAdapter(getChildFragmentManager());
         mViewPager.setAdapter(mAdapter);
-        SettingMainFragment fragment = (SettingMainFragment) getParentFragment();
         return view;
     }
 
