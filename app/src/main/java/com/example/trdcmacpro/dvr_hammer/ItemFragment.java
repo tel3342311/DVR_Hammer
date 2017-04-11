@@ -39,7 +39,21 @@ public class ItemFragment extends Fragment {
     private static ItemFragment mFragment;
     public void onSysModeChange(String mode) {
         if (mode.equals(Def.STORAGE_MODE)) {
+            new Thread() {
+                @Override
+                public void run() {
+                    super.run();
+                    mDvrClient = new DVRClient("admin", "admin");
+                    final List<RecordingItem> list = mDvrClient.getRecordingList();
 
+                    recyclerView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            recyclerView.setAdapter(new VideoItemRecyclerViewAdapter(list, mListener));
+                        }
+                    });
+                }
+            }.start();
         } else {
             ((MainActivity) getActivity()).showSnackBar("Please change DVR mode to continue.", "Change to Storage mode", mOnSnackBarClickListener);
         }
@@ -102,22 +116,6 @@ public class ItemFragment extends Fragment {
         // Set the adapter
         Context context = view.getContext();
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        //recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-        mDvrClient = new DVRClient("admin", "admin");
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                final List<RecordingItem> list = mDvrClient.getRecordingList();
-
-                recyclerView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        recyclerView.setAdapter(new VideoItemRecyclerViewAdapter(list, mListener));
-                    }
-                });
-            }
-        }.start();
         return view;
     }
 
