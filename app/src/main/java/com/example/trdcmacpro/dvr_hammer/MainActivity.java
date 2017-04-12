@@ -348,13 +348,11 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
                 case R.id.recordings_icon:
                     mViewPager.setCurrentItem(1,false);
                     mToolBarRecordings.setVisibility(View.VISIBLE);
-                    mTitleView.setText(mViewPager.getAdapter().getPageTitle(1));
                     mRecordings.setSelected(true);
                     return ;
                 case R.id.setting_icon:
                     mViewPager.setCurrentItem(2,false);
                     mToolBarSetting.setVisibility(View.VISIBLE);
-                    mTitleView.setText(mViewPager.getAdapter().getPageTitle(2));
                     mSetting.setSelected(true);
                     return;
             }
