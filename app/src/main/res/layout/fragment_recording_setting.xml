@@ -1,13 +1,94 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.trdcmacpro.dvr_hammer.RecordingSetting">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/recording_length_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/setting_timezone_title_margin_top"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:text="Recording Clip File Length Server"/>
 
-</FrameLayout>
+    <LinearLayout
+        android:id="@+id/recording_length_option"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/recording_option_height"
+        android:layout_below="@id/recording_length_title"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@drawable/setting_lcel_2"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="2Min"
+            android:textColor="@drawable/text_select_color"
+            android:textSize="@dimen/setting_option_text_size"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="3Min"
+            android:textColor="@drawable/text_select_color"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="5Min"
+            android:textColor="@drawable/text_select_color"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/recording_camera_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_below="@id/recording_length_option"
+        android:text="Recording Clip File Length Server" />
+
+    <LinearLayout
+        android:id="@+id/recording_camera_option"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/recording_option_height"
+        android:layout_below="@id/recording_camera_title"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@drawable/setting_lcel_2"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Front"
+            android:textColor="@drawable/text_select_color"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Rear"
+            android:textColor="@drawable/text_select_color"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Front&amp;Rear"
+            android:textColor="@drawable/text_select_color"/>
+    </LinearLayout>
+</RelativeLayout>

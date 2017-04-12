@@ -7,9 +7,9 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="toolbar_height">50dp</dimen>
     <dimen name="toolbar_recording_height">75dp</dimen>
-    <dimen name="bottombar_height">70dp</dimen>
-    <dimen name="bottom_icon_height_left_right">46dp</dimen>
-    <dimen name="bottom_icon_height_middle">50dp</dimen>
+    <dimen name="bottombar_height">64dp</dimen>
+    <dimen name="bottom_icon_height_left_right">44dp</dimen>
+    <dimen name="bottom_icon_height_middle">48dp</dimen>
     <!-- preview page-->
     <dimen name="preview_icon_snapshot">56dp</dimen>
     <dimen name="preview_icon_thumbnail">68dp</dimen>
@@ -29,5 +29,8 @@
     <dimen name="setting_timezone_edit_text_margin_left">24dp</dimen>
     <dimen name="setting_timezone_edit_text_padding_left">15dp</dimen>
     <dimen name="setting_timezone_picker_height">120dp</dimen>
+    <!--setting recording-->
+    <dimen name="recording_option_height">50dp</dimen>
+    <dimen name="setting_option_text_size">16sp</dimen>
 
 </resources>
