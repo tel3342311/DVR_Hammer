@@ -336,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
             String mode = mCameraMode;
             switch (v.getId()) {
                 case R.id.preview_icon:
-                    mViewPager.setCurrentItem(0);
+                    mViewPager.setCurrentItem(0,false);
                     mToolBarPreview.setVisibility(View.VISIBLE);
                     if (mode.equals(Def.FRONT_CAM_MODE)) {
                         mTitleView.setText(mViewPager.getAdapter().getPageTitle(0) + " 1");
@@ -346,13 +346,13 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
                     mPreview.setSelected(true);
                     return ;
                 case R.id.recordings_icon:
-                    mViewPager.setCurrentItem(1);
+                    mViewPager.setCurrentItem(1,false);
                     mToolBarRecordings.setVisibility(View.VISIBLE);
                     mTitleView.setText(mViewPager.getAdapter().getPageTitle(1));
                     mRecordings.setSelected(true);
                     return ;
                 case R.id.setting_icon:
-                    mViewPager.setCurrentItem(2);
+                    mViewPager.setCurrentItem(2,false);
                     mToolBarSetting.setVisibility(View.VISIBLE);
                     mTitleView.setText(mViewPager.getAdapter().getPageTitle(2));
                     mSetting.setSelected(true);

@@ -194,6 +194,7 @@ public class PreviewFragment extends Fragment {
     public void onResume() {
         super.onResume();
         checkDVRMode();
+        onSysModeChange(Def.RECORDING_MODE);
         resumeVideo();
         Log.d(TAG, "onResume called");
     }
