@@ -6,22 +6,25 @@
     android:background="@drawable/menu_tle">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/cancel_icon"
+        android:layout_width="@dimen/menu_icon_size"
+        android:layout_height="@dimen/menu_icon_size"
         android:layout_gravity="left|center_vertical"
         android:src="@drawable/setting_cancel"
         android:visibility="invisible"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
+        android:text="DVR Settings"
         android:textSize="24sp"
         android:layout_gravity="center"
         android:id="@+id/toolbar_title" />
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/confirm_icon"
+        android:layout_width="@dimen/menu_icon_size"
+        android:layout_height="@dimen/menu_icon_size"
         android:layout_gravity="right|center_vertical"
+        android:layout_marginRight="@dimen/menu_icon_margin_right"
         android:src="@drawable/setting_ok"
         android:visibility="invisible"/>
 
