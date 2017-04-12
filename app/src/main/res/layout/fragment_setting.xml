@@ -4,47 +4,120 @@
     android:orientation="horizontal"
     android:layout_margin="20dp">
 
-    <ImageView
-        android:id="@+id/time_zone"
+    <FrameLayout
         android:layout_width="0dp"
-        android:layout_height="300dp"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="20dp"
+        android:layout_height="@dimen/setting_main_icon_height"
         android:layout_weight="1"
-        android:background="@android:color/holo_orange_light"/>
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/setting_main_icon_margin">
+        <ImageView
+            android:id="@+id/time_zone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/setting_btn_syncnetwork"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/setting_main_icon_text_height"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/setting_main_icon_text_left_right_margin"
+            android:layout_marginRight="@dimen/setting_main_icon_text_left_right_margin"
+            android:layout_marginBottom="@dimen/setting_main_icon_text_bottom_margin"
+            android:text="Sync Network Time"
+            android:textSize="@dimen/setting_main_icon_text_size"
+            android:textAlignment="center"/>
+    </FrameLayout>
 
-    <ImageView
-        android:id="@+id/recording"
+    <FrameLayout
         android:layout_width="0dp"
-        android:layout_height="300dp"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="20dp"
+        android:layout_height="@dimen/setting_main_icon_height"
         android:layout_weight="1"
-        android:background="@android:color/darker_gray"/>
-    <ImageView
-        android:id="@+id/internet"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/setting_main_icon_margin">
+        <ImageView
+            android:id="@+id/recording"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/setting_recording"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/setting_main_icon_text_height"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/setting_main_icon_text_left_right_margin"
+            android:layout_marginRight="@dimen/setting_main_icon_text_left_right_margin"
+            android:layout_marginBottom="@dimen/setting_main_icon_text_bottom_margin"
+            android:text="Recording Setting"
+            android:textSize="@dimen/setting_main_icon_text_size"
+            android:textAlignment="center"/>
+    </FrameLayout>
+
+    <FrameLayout
         android:layout_width="0dp"
-        android:layout_height="300dp"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="20dp"
+        android:layout_height="@dimen/setting_main_icon_height"
         android:layout_weight="1"
-        android:background="@android:color/holo_blue_dark"/>
-    <ImageView
-        android:id="@+id/vpn"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/setting_main_icon_margin">
+        <ImageView
+            android:id="@+id/internet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/setting_internet"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/setting_main_icon_text_height"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/setting_main_icon_text_left_right_margin"
+            android:layout_marginRight="@dimen/setting_main_icon_text_left_right_margin"
+            android:layout_marginBottom="@dimen/setting_main_icon_text_bottom_margin"
+            android:text="Internet"
+            android:textSize="@dimen/setting_main_icon_text_size"
+            android:textAlignment="center"/>
+    </FrameLayout>
+
+    <FrameLayout
         android:layout_width="0dp"
-        android:layout_height="300dp"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="20dp"
+        android:layout_height="@dimen/setting_main_icon_height"
         android:layout_weight="1"
-        android:background="@android:color/holo_green_dark"/>
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/setting_main_icon_margin">
+        <ImageView
+            android:id="@+id/vpn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/setting_cloudservice"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/setting_main_icon_text_height"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/setting_main_icon_text_left_right_margin"
+            android:layout_marginRight="@dimen/setting_main_icon_text_left_right_margin"
+            android:layout_marginBottom="@dimen/setting_main_icon_text_bottom_margin"
+            android:text="CloudService"
+            android:textSize="@dimen/setting_main_icon_text_size"
+            android:textAlignment="center"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="@dimen/setting_main_icon_height"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/setting_main_icon_margin">
     <ImageView
         android:id="@+id/wifi"
-        android:layout_width="0dp"
-        android:layout_height="300dp"
-        android:layout_gravity="center_vertical"
-        android:layout_margin="20dp"
-        android:layout_weight="1"
-        android:background="@android:color/holo_red_dark"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/setting_wifi"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/setting_main_icon_text_height"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="@dimen/setting_main_icon_text_left_right_margin"
+        android:layout_marginRight="@dimen/setting_main_icon_text_left_right_margin"
+        android:layout_marginBottom="@dimen/setting_main_icon_text_bottom_margin"
+        android:text="Wifi Setting"
+        android:textSize="@dimen/setting_main_icon_text_size"
+        android:textAlignment="center"/>
+    </FrameLayout>
 </LinearLayout>
 
 
