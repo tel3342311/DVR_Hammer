@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
-    tools:context="com.example.trdcmacpro.dvr_hammer.SettingFragment">
-
+    android:clickable="true">
     <android.support.v4.view.ViewPager
         android:id="@+id/content"
         android:layout_width="match_parent"

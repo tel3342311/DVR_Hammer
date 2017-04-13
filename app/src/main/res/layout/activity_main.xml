@@ -5,9 +5,9 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.trdcmacpro.dvr_hammer.MainActivity">
+    tools:context="com.liteon.iView.MainActivity">
 
-    <com.example.trdcmacpro.dvr_hammer.util.FragmentViewPager
+    <com.liteon.iView.util.FragmentViewPager
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
