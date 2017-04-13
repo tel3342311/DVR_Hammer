@@ -1,5 +1,6 @@
 package com.liteon.iView.util;
 
+import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -31,22 +32,24 @@ import java.util.regex.Pattern;
 public class DVRClient {
 
     private final static String TAG = DVRClient.class.getName();
-
-    private String username;
-    private String password;
+    private static DVRClient mDVRClient;
+    private Context mContext;
+    private String username = "admin";
+    private String password = "admin";
     private Uri mUri;
     private String mCameraMode = Def.FRONT_CAM_MODE;
 
-    public DVRClient(String user, String pass) {
-        if (!TextUtils.isEmpty(user)) {
-            this.username = user;
-        }
-        if (!TextUtils.isEmpty(pass)) {
-            this.password = pass;
-        }
+    private DVRClient(Context c) {
+        mContext = c;
         mUri = new Uri.Builder()
                     .scheme("http")
                     .authority("192.168.10.1").build();
+    }
+
+    public static DVRClient newInstance(Context context) {
+        if (mDVRClient == null) {
+            mDVRClient = new DVRClient(context);
+        }
     }
 
     public void setSystemMode(String mode) {
