@@ -28,6 +28,8 @@ public class Def {
     //DVR security setting
     public final static String security_setting = "wireless/security.shtml";
     public final static String security_cgi = "cgi-bin/wireless.cgi";
+    //DVR wifi setting
+    public final static String wifi_setting = "wireless/basic.shtml";
 
     //current DVR version
     public final static String status_page = "adm/status.shtml";
@@ -169,4 +171,9 @@ public class Def {
     public final static String EXTRA_GET_SYS_MODE = "com.example.trdcmacpro.dvr_hammer.service.extra.GET_SYS";
     public final static String EXTRA_SET_SYS_MODE = "com.example.trdcmacpro.dvr_hammer.service.extra.SET_SYS";
     public final static String EXTRA_GET_CAM_MODE = "com.example.trdcmacpro.dvr_hammer.service.extra.GET_CAM";
+
+    //Key for sharePreference
+    public final static String SHARE_PREFERENCE = "com.liteon.iView.PREFERENCE_FILE_KEY";
+    public final static String SP_SSID = "SP_SSID";
+    public final static String SP_BSSID = "SP_BSSID";
 }

@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         mTitleView.setText("Camera 1");
         mCamera2.setVisibility(View.VISIBLE);
         mPreview.setSelected(true);
-        mDvrClient = new DVRClient("admin", "admin");
+        mDvrClient = DVRClient.newInstance(getApplicationContext());
         mHandlerTime.postDelayed(HideUIControl, 1500);
 
 //        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
@@ -183,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
                 public void run() {
                     super.run();
                     mDvrClient.setCameraMode(mode);
+                    mDvrClient.getWifiBasic();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

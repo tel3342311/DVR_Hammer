@@ -102,7 +102,7 @@ public class DvrInfoService extends IntentService {
     }
 
     private void handleActionGetSysInfo() {
-        DVRClient dvrClient = new DVRClient("admin", "admin");
+        DVRClient dvrClient = DVRClient.newInstance(getApplicationContext());
         String mode = dvrClient.getSystemMode();
         Log.v(TAG, "[handleActionGetSysInfo] sys mode is " + mode);
         Intent intent = new Intent(Def.ACTION_GET_SYS_MODE);
@@ -111,7 +111,7 @@ public class DvrInfoService extends IntentService {
     }
 
     private void handleActionSetSysInfo(String mode) {
-        DVRClient dvrClient = new DVRClient("admin", "admin");
+        DVRClient dvrClient = DVRClient.newInstance(getApplicationContext());
         dvrClient.setSystemMode(mode);
         Log.v(TAG, "[handleActionSetSysInfo] sys mode is " + mode);
         Intent intent = new Intent(Def.ACTION_GET_SYS_MODE);
@@ -120,7 +120,7 @@ public class DvrInfoService extends IntentService {
     }
 
     private void handleActionGetCamMode(){
-        DVRClient dvrClient = new DVRClient("admin", "admin");
+        DVRClient dvrClient = DVRClient.newInstance(getApplicationContext());
         String mode = dvrClient.getCameraMode();
         Log.v(TAG, "[handleActionGetCamMode] Camera Mode is " + mode);
         Intent intent = new Intent(Def.ACTION_GET_CAM_MODE);
@@ -133,7 +133,7 @@ public class DvrInfoService extends IntentService {
     }
 
     private void handleActionGetInternet(){
-        DVRClient dvrClient = new DVRClient("admin", "admin");
+        DVRClient dvrClient = DVRClient.newInstance(getApplicationContext());
         Map map = dvrClient.get3GModemList();
         Log.v(TAG, "[handleActionGetInternet] get3GModemList is " + map.toString());
     }
@@ -147,7 +147,7 @@ public class DvrInfoService extends IntentService {
     }
 
     private void handleActionGetAdmin(){
-        DVRClient dvrClient = new DVRClient("admin", "admin");
+        DVRClient dvrClient = DVRClient.newInstance(getApplicationContext());
         Map map = dvrClient.getTimeZoneList();
         Log.v(TAG, "[handleActionGetAdmin] getTimeZoneList is " + map.toString());
     }

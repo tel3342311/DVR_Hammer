@@ -1,10 +1,15 @@
 package com.liteon.iView;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.liteon.iView.util.Def;
 
 
 /**
@@ -31,4 +36,12 @@ public class WifiSettingFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_wifi_setting, container, false);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences sp = getContext().getSharedPreferences(Def.SHARE_PREFERENCE, Context.MODE_PRIVATE);
+        String ssid = sp.getString(Def.SP_SSID, "SSID");
+        String bssid = sp.getString(Def.SP_BSSID, "BSSID");
+        Toast.makeText(getContext(), "SSID " + ssid + ", BSSID " + bssid, Toast.LENGTH_LONG).show();
+    }
 }

@@ -39,7 +39,7 @@ public class ItemFragment extends Fragment {
                 @Override
                 public void run() {
                     super.run();
-                    mDvrClient = new DVRClient("admin", "admin");
+                    mDvrClient = DVRClient.newInstance(getContext());
                     final List<RecordingItem> list = mDvrClient.getRecordingList();
 
                     recyclerView.post(new Runnable() {

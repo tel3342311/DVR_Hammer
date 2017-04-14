@@ -1,6 +1,7 @@
 package com.liteon.iView.util;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -38,18 +39,23 @@ public class DVRClient {
     private String password = "admin";
     private Uri mUri;
     private String mCameraMode = Def.FRONT_CAM_MODE;
+    private SharedPreferences mSharedPref;
 
     private DVRClient(Context c) {
         mContext = c;
         mUri = new Uri.Builder()
                     .scheme("http")
                     .authority("192.168.10.1").build();
+         mSharedPref = mContext.getSharedPreferences(
+                Def.SHARE_PREFERENCE, Context.MODE_PRIVATE);
+
     }
 
     public static DVRClient newInstance(Context context) {
         if (mDVRClient == null) {
             mDVRClient = new DVRClient(context);
         }
+        return mDVRClient;
     }
 
     public void setSystemMode(String mode) {
@@ -305,6 +311,137 @@ public class DVRClient {
             e.printStackTrace();
         }
         return map;
+    }
+
+    //public get infomation from ADM page "adm/management.shtml"
+    //NTP server
+    //Timezone list
+
+    public void getInfoFromADMPage() {
+        Map<String, String> map = new HashMap<>();
+        try {
+            URL url = new URL(String.format(Def.DVR_Url, Def.adm_setting));
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            if (!TextUtils.isEmpty(password)) {
+                urlConnection.setRequestProperty("Authorization", getAuthorizationHeader());
+            }
+
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            urlConnection.setUseCaches(false);
+
+            InputStream is = urlConnection.getInputStream();
+            Document doc = Jsoup.parse(is, "UTF-8", url.toString());
+            Elements elements = doc.select("select[name=time_zone] > option");
+            for (Element e : elements) {
+                map.put(e.text(), e.val());
+            }
+            Log.i(TAG, "getInfoFromADMPage Timezone List, map is " + map.toString());
+            int response = urlConnection.getResponseCode();
+            Log.i(TAG, "getInfoFromADMPage, Response is " + response);
+            is.close();
+            urlConnection.disconnect();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getWifiBasic() {
+        String ssid = "";
+        String passphase = "";
+        String bssid = "";
+        try {
+            URL url = new URL(String.format(Def.DVR_Url, Def.wifi_setting));
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            if (!TextUtils.isEmpty(password)) {
+                urlConnection.setRequestProperty("Authorization", getAuthorizationHeader());
+            }
+
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            urlConnection.setUseCaches(false);
+
+            InputStream is = urlConnection.getInputStream();
+            Document doc = Jsoup.parse(is, "UTF-8", url.toString());
+            Elements element = doc.getElementsByAttributeValue("language", "JavaScript");
+            String data = element.first().data();
+            Pattern pattern = Pattern.compile("document.wireless_basic.mssid_0.value = \"(.*)\";");
+            Matcher matcher = pattern.matcher(data);
+
+            if (matcher.find()) {
+                ssid = matcher.group(1);
+            }
+            Log.i(TAG, "Get SSID is " + ssid);
+
+            element = doc.select("td[id=basicBSSID] + td");
+            //remove &nbsp;
+            bssid = element.text().replace("\u00a0","");
+            Log.i(TAG, "Get BSSID is " + bssid);
+
+            int response = urlConnection.getResponseCode();
+            Log.i(TAG, "Get getWifiBasic , Response is " + response);
+            is.close();
+            SharedPreferences.Editor editor = mSharedPref.edit();
+            editor.putString(Def.SP_SSID, ssid);
+            editor.putString(Def.SP_BSSID, bssid);
+            editor.commit();
+            urlConnection.disconnect();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void getSecurity() {
+        String ssid = "";
+        try {
+            URL url = new URL(String.format(Def.DVR_Url, Def.security_setting));
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            if (!TextUtils.isEmpty(password)) {
+                urlConnection.setRequestProperty("Authorization", getAuthorizationHeader());
+            }
+
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            urlConnection.setUseCaches(false);
+
+            InputStream is = urlConnection.getInputStream();
+            Document doc = Jsoup.parse(is, "UTF-8", url.toString());
+            Elements elements = doc.select("select[name=ssidIndex] > option");
+            ssid = elements.first().val();
+            Log.i(TAG, "Get SSID is " + ssid);
+            int response = urlConnection.getResponseCode();
+            Log.i(TAG, "Get SSID List , Response is " + response);
+
+            //get Passphase
+//            pattern = Pattern.compile("WPAPSK[0] = \"(.*)\"");
+//            matcher = pattern.matcher(data);
+//            if (matcher.find()) {
+//                passphase = matcher.group(1);
+//            }
+//            Log.i(TAG, "Get passphase is " + passphase);
+//
+//            pattern = Pattern.compile("if \\(\\(document.getElementById\\(\"newap_text_\" + i\\).value == \"(.*)\"");
+//            matcher = pattern.matcher(data);
+//            if (matcher.find()) {
+//                bssid = matcher.group(1);
+//            }
+//            Log.i(TAG, "Get bssid is " + passphase);
+
+            is.close();
+            urlConnection.disconnect();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Map<String, String> getTimeZoneList() {
