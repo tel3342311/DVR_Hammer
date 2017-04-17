@@ -176,4 +176,20 @@ public class Def {
     public final static String SHARE_PREFERENCE = "com.liteon.iView.PREFERENCE_FILE_KEY";
     public final static String SP_SSID = "SP_SSID";
     public final static String SP_BSSID = "SP_BSSID";
+    public final static String SP_SECURITY = "SP_SECURITY";
+    public final static String SP_ENCRYPTTYPE = "SP_ENCRYPTTYPE";
+    public final static String SP_PASSPHASE = "SP_PASSPHASE";
+    public final static String SP_APN3G = "SP_APN3G";
+    public final static String SP_PIN3G = "SP_PIN3G";
+    public final static String SP_DIAL3G = "SP_DIAL3G";
+    public final static String SP_USER3G = "SP_USER3G";
+    public final static String SP_MODEM_LIST_JSON = "SP_MODEM_LIST_JSON";
+    public final static String SP_PASSWORD3G = "SP_PASSWORD3G";
+    public final static String SP_PPTPSERVER = "SP_PPTPSERVER";
+    public final static String SP_PPTPUSER = "SP_PPTPUSER";
+    public final static String SP_PPTPPASS = "SP_PPTPPASS";
+    public final static String SP_TIMEZONE_LIST = "SP_TIMEZONE_LIST";
+    public final static String SP_TIMEZONE = "SP_TIMEZONE";
+    public final static String SP_NTPSERVER = "SP_NTPSERVER";
+    public final static String SP_NTP_SYNC_VALUE = "SP_NTP_SYNC_VALUE";
 }

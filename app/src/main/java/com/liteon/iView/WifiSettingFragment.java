@@ -42,6 +42,8 @@ public class WifiSettingFragment extends Fragment {
         SharedPreferences sp = getContext().getSharedPreferences(Def.SHARE_PREFERENCE, Context.MODE_PRIVATE);
         String ssid = sp.getString(Def.SP_SSID, "SSID");
         String bssid = sp.getString(Def.SP_BSSID, "BSSID");
-        Toast.makeText(getContext(), "SSID " + ssid + ", BSSID " + bssid, Toast.LENGTH_LONG).show();
+        String securityMode = sp.getString(Def.SP_SECURITY, "OPEN");
+        String encryptType = sp.getString(Def.SP_ENCRYPTTYPE, "NONE");
+        Toast.makeText(getContext(), "SSID " + ssid + ", BSSID " + bssid + ", Security mode " + securityMode + ", Encrypt Type " + encryptType, Toast.LENGTH_LONG).show();
     }
 }

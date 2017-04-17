@@ -7,6 +7,9 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -40,15 +43,15 @@ public class DVRClient {
     private Uri mUri;
     private String mCameraMode = Def.FRONT_CAM_MODE;
     private SharedPreferences mSharedPref;
-
+    private Gson mGson;
     private DVRClient(Context c) {
         mContext = c;
         mUri = new Uri.Builder()
                     .scheme("http")
                     .authority("192.168.10.1").build();
-         mSharedPref = mContext.getSharedPreferences(
+        mSharedPref = mContext.getSharedPreferences(
                 Def.SHARE_PREFERENCE, Context.MODE_PRIVATE);
-
+        mGson = new GsonBuilder().create();
     }
 
     public static DVRClient newInstance(Context context) {
@@ -319,6 +322,10 @@ public class DVRClient {
 
     public void getInfoFromADMPage() {
         Map<String, String> map = new HashMap<>();
+        String timeZoneListJson = "";
+        String timeZone = "";
+        String ntp_server = "";
+        String ntp_sync_value = "";
         try {
             URL url = new URL(String.format(Def.DVR_Url, Def.adm_setting));
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -338,11 +345,41 @@ public class DVRClient {
             for (Element e : elements) {
                 map.put(e.text(), e.val());
             }
+
+            timeZoneListJson = mGson.toJson(map);
+
+            //Get Current TimeZone
+            elements = doc.getElementsByAttributeValue("language", "JavaScript");
+            String data = elements.first().data();
+            Pattern pattern = Pattern.compile("var tz = \"(.*)\";");
+            Matcher matcher = pattern.matcher(data);
+            if (matcher.find()) {
+                timeZone = matcher.group(1);
+            }
+
+            //Get NTP server
+            elements = doc.select("input[name=NTPServerIP]");
+            ntp_server = elements.val();
+
+            elements = doc.select("input[name=NTPSync]");
+            ntp_sync_value = elements.val();
+
             Log.i(TAG, "getInfoFromADMPage Timezone List, map is " + map.toString());
+            Log.i(TAG, "getInfoFromADMPage Timezone is " + timeZone);
+            Log.i(TAG, "getInfoFromADMPage NTPServerIP " + ntp_server);
+            Log.i(TAG, "getInfoFromADMPage NTP Sync value " + ntp_sync_value);
+
             int response = urlConnection.getResponseCode();
             Log.i(TAG, "getInfoFromADMPage, Response is " + response);
             is.close();
             urlConnection.disconnect();
+
+            SharedPreferences.Editor editor = mSharedPref.edit();
+            editor.putString(Def.SP_TIMEZONE_LIST, timeZoneListJson);
+            editor.putString(Def.SP_TIMEZONE, timeZone);
+            editor.putString(Def.SP_NTPSERVER, ntp_server);
+            editor.putString(Def.SP_NTP_SYNC_VALUE, ntp_sync_value);
+            editor.commit();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -386,11 +423,11 @@ public class DVRClient {
             int response = urlConnection.getResponseCode();
             Log.i(TAG, "Get getWifiBasic , Response is " + response);
             is.close();
+            urlConnection.disconnect();
             SharedPreferences.Editor editor = mSharedPref.edit();
             editor.putString(Def.SP_SSID, ssid);
             editor.putString(Def.SP_BSSID, bssid);
             editor.commit();
-            urlConnection.disconnect();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -398,8 +435,10 @@ public class DVRClient {
 
     }
 
-    public void getSecurity() {
-        String ssid = "";
+    public void getWifiSecurity() {
+        String securityMode = "";
+        String encryptType = "";
+        String passPhase = "";
         try {
             URL url = new URL(String.format(Def.DVR_Url, Def.security_setting));
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -415,27 +454,123 @@ public class DVRClient {
 
             InputStream is = urlConnection.getInputStream();
             Document doc = Jsoup.parse(is, "UTF-8", url.toString());
-            Elements elements = doc.select("select[name=ssidIndex] > option");
-            ssid = elements.first().val();
-            Log.i(TAG, "Get SSID is " + ssid);
-            int response = urlConnection.getResponseCode();
-            Log.i(TAG, "Get SSID List , Response is " + response);
+            Elements elements = doc.getElementsByAttributeValue("language", "JavaScript");
+            String data = elements.first().data();
+            Pattern pattern = Pattern.compile("PreAuth = str\\.split\\(\";\"\\);\n\tstr = \"(.*)\";");
+            Matcher matcher = pattern.matcher(data);
 
+            if (matcher.find()) {
+                securityMode = matcher.group(1);
+            }
+
+            pattern = Pattern.compile("AuthMode = str\\.split\\(\";\"\\);\n\tstr = \"(.*)\";");
+            matcher = pattern.matcher(data);
+
+            if (matcher.find()) {
+                encryptType = matcher.group(1);
+            }
             //get Passphase
-//            pattern = Pattern.compile("WPAPSK[0] = \"(.*)\"");
-//            matcher = pattern.matcher(data);
-//            if (matcher.find()) {
-//                passphase = matcher.group(1);
-//            }
-//            Log.i(TAG, "Get passphase is " + passphase);
-//
-//            pattern = Pattern.compile("if \\(\\(document.getElementById\\(\"newap_text_\" + i\\).value == \"(.*)\"");
-//            matcher = pattern.matcher(data);
-//            if (matcher.find()) {
-//                bssid = matcher.group(1);
-//            }
-//            Log.i(TAG, "Get bssid is " + passphase);
+            pattern = Pattern.compile("WPAPSK[0] = \"(.*)\"");
+            matcher = pattern.matcher(data);
+            if (matcher.find()) {
+                passPhase = matcher.group(1);
+            }
+            Log.i(TAG, "Get passphase is " + passPhase);
+            Log.i(TAG, "Get securityMode is " + securityMode);
+            Log.i(TAG, "Get encrypType is " + encryptType);
+            int response = urlConnection.getResponseCode();
+            Log.i(TAG, "Get wifi security, Response is " + response);
 
+            is.close();
+            urlConnection.disconnect();
+            SharedPreferences.Editor editor = mSharedPref.edit();
+            editor.putString(Def.SP_SECURITY, securityMode);
+            editor.putString(Def.SP_ENCRYPTTYPE, encryptType);
+            editor.putString(Def.SP_PASSPHASE, passPhase);
+            editor.commit();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getNetworkSetting() {
+        //3g setting
+        String apn = "";
+        String pin = "";
+        String dial_num = "";
+        String username_3g = "";
+        String password_3g = "";
+        Map<String, String> modemList = new HashMap<>();
+        String modemListJson = "";
+        //VPN setting
+        String pptp_server = "";
+        String username_pptp = "";
+        String password_pptp = "";
+
+
+        try {
+            URL url = new URL(String.format(Def.DVR_Url, Def.net_setting));
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            if (!TextUtils.isEmpty(password)) {
+                urlConnection.setRequestProperty("Authorization", getAuthorizationHeader());
+            }
+
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            urlConnection.setUseCaches(false);
+
+            InputStream is = urlConnection.getInputStream();
+            Document doc = Jsoup.parse(is, "UTF-8", url.toString());
+            Elements elements = doc.select("select[name=Dev3G] > option");
+            for (Element e : elements) {
+                modemList.put(e.text(), e.val());
+            }
+            modemListJson = mGson.toJson(modemList);
+            //Get map from json
+            //Type typeOfHashMap = new TypeToken<Map<String, String>>() { }.getType();
+            //Map<String, String> newMap = gson.fromJson(modemListJson, typeOfHashMap);
+
+            Log.i(TAG, "Get 3GModem List, map is " + modemList.toString());
+
+            elements = doc.select("input[name*=\"3G\"], input[name^=\"pptp\"]");
+            for (Element e : elements) {
+                Log.i(TAG, "data name" + e.attr("name") + " , val " + e.val() );
+                if (e.attr("name").equals("APN3G")) {
+                    apn = e.val();
+                } else if (e.attr("name").equals("PIN3G")) {
+                    pin = e.val();
+                } else if (e.attr("name").equals("Dial3G")) {
+                    dial_num = e.val();
+                } else if (e.attr("name").equals("User3G")) {
+                    username_3g = e.val();
+                } else if (e.attr("name").equals("Password3G")) {
+                    password_3g = e.val();
+                } else if (e.attr("name").equals("pptpServer")) {
+                    pptp_server = e.val();
+                } else if (e.attr("name").equals("pptpUser")) {
+                    username_pptp = e.val();
+                } else if (e.attr("name").equals("pptpPass")) {
+                    password_pptp = e.val();
+                }
+            }
+
+            SharedPreferences.Editor editor = mSharedPref.edit();
+            editor.putString(Def.SP_APN3G, apn);
+            editor.putString(Def.SP_PIN3G, pin);
+            editor.putString(Def.SP_DIAL3G, dial_num);
+            editor.putString(Def.SP_USER3G, username_3g);
+            editor.putString(Def.SP_MODEM_LIST_JSON, modemListJson);
+            editor.putString(Def.SP_PASSWORD3G, password_3g);
+            editor.putString(Def.SP_PPTPSERVER, pptp_server);
+            editor.putString(Def.SP_PPTPUSER, username_pptp);
+            editor.putString(Def.SP_PPTPPASS, password_pptp);
+            editor.commit();
+
+            int response = urlConnection.getResponseCode();
+            Log.i(TAG, "getNetworkSetting , Response is " + response);
             is.close();
             urlConnection.disconnect();
 
