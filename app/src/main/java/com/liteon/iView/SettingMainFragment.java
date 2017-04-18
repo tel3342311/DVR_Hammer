@@ -53,6 +53,7 @@ public class SettingMainFragment extends Fragment {
         mAdapter = new SettingFragmentAdapter(getChildFragmentManager());
         mViewPager.setAdapter(mAdapter);
         mViewPager.addOnPageChangeListener(mOnSettingPageChangeListener);
+        mConfirm.setEnabled(false);
         return view;
     }
 
