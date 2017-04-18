@@ -302,7 +302,7 @@ public class DVRClient {
             Document doc = Jsoup.parse(is, "UTF-8", url.toString());
             Elements elements = doc.select("select[name=Dev3G] > option");
             for (Element e : elements) {
-                map.put(e.text(), e.val());
+                map.put(e.val(),e.text());
             }
             Log.i(TAG, "Get 3GModem List, map is " + map.toString());
             int response = urlConnection.getResponseCode();
@@ -343,7 +343,7 @@ public class DVRClient {
             Document doc = Jsoup.parse(is, "UTF-8", url.toString());
             Elements elements = doc.select("select[name=time_zone] > option");
             for (Element e : elements) {
-                map.put(e.text(), e.val());
+                map.put(e.val(), e.text());
             }
 
             timeZoneListJson = mGson.toJson(map);
@@ -379,6 +379,71 @@ public class DVRClient {
             editor.putString(Def.SP_TIMEZONE, timeZone);
             editor.putString(Def.SP_NTPSERVER, ntp_server);
             editor.putString(Def.SP_NTP_SYNC_VALUE, ntp_sync_value);
+            editor.commit();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getCameraSetting() {
+
+        //option is [2m,3m,5m]
+        String length = "";
+        //option is [cha,chb,chab]
+        String recording_channel = "";
+        //option is [cha,chb]
+        String preview_channel = "";
+        try {
+            URL url = new URL(String.format(Def.DVR_Url, Def.camera_setting));
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            if (!TextUtils.isEmpty(password)) {
+                urlConnection.setRequestProperty("Authorization", getAuthorizationHeader());
+            }
+
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            urlConnection.setUseCaches(false);
+
+            InputStream is = urlConnection.getInputStream();
+            Document doc = Jsoup.parse(is, "UTF-8", url.toString());
+            Elements element = doc.getElementsByAttributeValue("language", "JavaScript");
+            String data = element.first().data();
+            Pattern pattern = Pattern.compile("var clipl  = \"(.*)\";");
+            Matcher matcher = pattern.matcher(data);
+
+            if (matcher.find()) {
+                length = matcher.group(1);
+            }
+
+            pattern = Pattern.compile("var resol  = \"(.*)\";");
+            matcher = pattern.matcher(data);
+
+            if (matcher.find()) {
+                recording_channel = matcher.group(1);
+            }
+
+            pattern = Pattern.compile("var dspch  = \"(.*)\";");
+            matcher = pattern.matcher(data);
+
+            if (matcher.find()) {
+                preview_channel = matcher.group(1);
+            }
+
+            Log.i(TAG, "getCameraSetting recording length, length is " + length);
+            Log.i(TAG, "getCameraSetting recording_camera, camera is " + recording_channel);
+            Log.i(TAG, "getCameraSetting camera_mode, mode is " + preview_channel);
+
+            int response = urlConnection.getResponseCode();
+            Log.i(TAG, "getCameraSetting, Response is " + response);
+            is.close();
+            urlConnection.disconnect();
+            SharedPreferences.Editor editor = mSharedPref.edit();
+            editor.putString(Def.SP_RECORDING_LENGTH, length);
+            editor.putString(Def.SP_RECORDING_CAMERA, recording_channel);
+            editor.putString(Def.SP_PREVIEW_CAMERA, preview_channel);
             editor.commit();
 
         } catch (IOException e) {
@@ -598,7 +663,7 @@ public class DVRClient {
             Document doc = Jsoup.parse(is, "UTF-8", url.toString());
             Elements elements = doc.select("select[name=time_zone] > option");
             for (Element e : elements) {
-                map.put(e.text(), e.val());
+                map.put(e.val(), e.text());
             }
             Log.i(TAG, "Get Timezone List, map is " + map.toString());
             int response = urlConnection.getResponseCode();

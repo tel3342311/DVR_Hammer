@@ -192,4 +192,7 @@ public class Def {
     public final static String SP_TIMEZONE = "SP_TIMEZONE";
     public final static String SP_NTPSERVER = "SP_NTPSERVER";
     public final static String SP_NTP_SYNC_VALUE = "SP_NTP_SYNC_VALUE";
+    public final static String SP_RECORDING_LENGTH = "SP_RECORDING_LENGTH";
+    public final static String SP_RECORDING_CAMERA = "SP_RECORDING_CAMERA";
+    public final static String SP_PREVIEW_CAMERA = "SP_PREVIEW_CAMERA";
 }

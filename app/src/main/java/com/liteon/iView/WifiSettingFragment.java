@@ -18,6 +18,11 @@ import com.liteon.iView.util.Def;
 public class WifiSettingFragment extends Fragment {
 
 
+    private String mSsid;
+    private String mBssid;
+    private String mSecurityMode;
+    private String mEncryptType;
+
     public WifiSettingFragment() {
         // Required empty public constructor
     }
@@ -40,10 +45,10 @@ public class WifiSettingFragment extends Fragment {
     public void onResume() {
         super.onResume();
         SharedPreferences sp = getContext().getSharedPreferences(Def.SHARE_PREFERENCE, Context.MODE_PRIVATE);
-        String ssid = sp.getString(Def.SP_SSID, "SSID");
-        String bssid = sp.getString(Def.SP_BSSID, "BSSID");
-        String securityMode = sp.getString(Def.SP_SECURITY, "OPEN");
-        String encryptType = sp.getString(Def.SP_ENCRYPTTYPE, "NONE");
-        Toast.makeText(getContext(), "SSID " + ssid + ", BSSID " + bssid + ", Security mode " + securityMode + ", Encrypt Type " + encryptType, Toast.LENGTH_LONG).show();
+        mSsid = sp.getString(Def.SP_SSID, "SSID");
+        mBssid = sp.getString(Def.SP_BSSID, "BSSID");
+        mSecurityMode = sp.getString(Def.SP_SECURITY, "OPEN");
+        mEncryptType = sp.getString(Def.SP_ENCRYPTTYPE, "NONE");
+        Toast.makeText(getContext(), "SSID " + mSsid + ", BSSID " + mBssid + ", Security mode " + mSecurityMode + ", Encrypt Type " + mEncryptType, Toast.LENGTH_LONG).show();
     }
 }
