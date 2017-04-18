@@ -34,8 +34,9 @@
         android:layout_below="@id/ntp_sec"
         android:text="Time Zone" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/time_zone_list"
+    <LinearLayout
+        android:id="@+id/picker_container"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="@dimen/setting_timezone_picker_height"
         android:layout_below="@id/timezone_title"
@@ -43,5 +44,16 @@
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:background="@drawable/setting_lcel_4"/>
+
+    <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:id="@+id/time_zone_list"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/setting_timezone_picker_height"-->
+        <!--android:layout_below="@id/timezone_title"-->
+        <!--android:layout_marginTop="@dimen/activity_vertical_margin"-->
+        <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+        <!--android:layout_marginRight="@dimen/activity_horizontal_margin"-->
+        <!--android:padding="1dp"-->
+        <!--android:background="@drawable/setting_lcel_4"/>-->
 
 </RelativeLayout>

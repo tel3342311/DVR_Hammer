@@ -30,6 +30,9 @@
     <dimen name="setting_timezone_edit_text_margin_left">24dp</dimen>
     <dimen name="setting_timezone_edit_text_padding_left">15dp</dimen>
     <dimen name="setting_timezone_picker_height">120dp</dimen>
+    <dimen name="setting_timezone_text_normal">16sp</dimen>
+    <dimen name="setting_timezone_text_selected">28sp</dimen>
+    <dimen name="setting_timezone_item_height">40dp</dimen>
     <!--setting recording-->
     <dimen name="recording_option_height">50dp</dimen>
     <dimen name="setting_option_text_size">16sp</dimen>

@@ -1,4 +1,4 @@
-package com.liteon.iView;
+package com.liteon.iView.util;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.liteon.iView.ItemFragment.OnListFragmentInteractionListener;
-import com.liteon.iView.util.RecordingItem;
+import com.liteon.iView.R;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class VideoItemRecyclerViewAdapter extends RecyclerView.Adapter<VideoItem
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_item, parent, false);
+                .inflate(R.layout.video_item, parent, false);
 
         return new ViewHolder(view);
     }
