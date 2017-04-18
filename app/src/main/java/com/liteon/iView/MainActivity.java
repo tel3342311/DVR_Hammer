@@ -187,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
                     mDvrClient.getWifiSecurity();
                     mDvrClient.getNetworkSetting();
                     mDvrClient.getInfoFromADMPage();
+                    mDvrClient.getCameraSetting();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

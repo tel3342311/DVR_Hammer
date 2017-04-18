@@ -14,6 +14,7 @@ import com.liteon.iView.service.DvrInfoService;
 import com.liteon.iView.util.DVRClient;
 import com.liteon.iView.util.Def;
 import com.liteon.iView.util.RecordingItem;
+import com.liteon.iView.util.VideoItemRecyclerViewAdapter;
 
 import java.util.List;
 
