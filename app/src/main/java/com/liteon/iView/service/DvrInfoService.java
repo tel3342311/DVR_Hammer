@@ -21,6 +21,7 @@ public class DvrInfoService extends IntentService {
     private static final String ACTION_GET_WIRELESS = Def.ACTION_GET_WIRELESS;
     private static final String ACTION_GET_SECURITY = Def.ACTION_GET_SECURITY;
     private static final String ACTION_GET_ADMIN    = Def.ACTION_GET_ADMIN;
+    private static final String ACTION_SET_TIMEZONE = Def.ACTION_SET_TIMEZONE;
 
     // TODO: Rename parameters
     private static final String EXTRA_PARAM1 = "com.example.trdcmacpro.dvr_hammer.service.extra.PARAM1";
@@ -93,6 +94,10 @@ public class DvrInfoService extends IntentService {
                 handleActionGetSecurity();
             } else if (ACTION_GET_ADMIN.equals(action)) {
                 handleActionGetAdmin();
+            } else if (ACTION_SET_TIMEZONE.equals(action)) {
+                String timezone = intent.getStringExtra(Def.EXTRA_TIMEZONE);
+                String ntpServer = intent.getStringExtra(Def.EXTRA_NTP_SERVER);
+                handleActionSetTimezone(timezone, ntpServer);
             }
         }
     }
@@ -152,6 +157,10 @@ public class DvrInfoService extends IntentService {
         Log.v(TAG, "[handleActionGetAdmin] getTimeZoneList is " + map.toString());
     }
 
+    private void handleActionSetTimezone(String timezone, String ntpServer) {
+        DVRClient dvrClient = DVRClient.newInstance(getApplicationContext());
+        dvrClient.setTimezone(timezone, ntpServer);
+    }
     @Override
     public void onDestroy() {
         Log.v(TAG, "onDestroy");

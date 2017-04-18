@@ -1,5 +1,6 @@
 package com.liteon.iView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.liteon.iView.service.DvrInfoService;
+import com.liteon.iView.util.Def;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -79,7 +83,26 @@ public class SettingMainFragment extends Fragment {
     private View.OnClickListener mOnConfirmClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            //send click event to fragment
+            Intent intent = new Intent();
+            int position = mViewPager.getCurrentItem();
+            Fragment fragment = mAdapter.getItem(position);
+            if (position == SETTING_TIMEZONE) {
+                String timezone = ((TimeZoneFragment)fragment).getCurrentTimeZone();
+                String ntpServer = ((TimeZoneFragment)fragment).getNTPServer();
+                intent.setAction(Def.ACTION_SET_TIMEZONE);
+                intent.putExtra(Def.EXTRA_TIMEZONE, timezone);
+                intent.putExtra(Def.EXTRA_NTP_SERVER, ntpServer);
+            } else if (position == SETTING_RECORDINGS) {
+
+            } else if (position == SETTING_INTERNET) {
+
+            } else if (position == SETTING_VPN) {
+
+            } else if (position == SETTING_WIFI) {
+
+            }
+            intent.setClass(getActivity(), DvrInfoService.class);
+            getContext().startService(intent);
         }
     };
 

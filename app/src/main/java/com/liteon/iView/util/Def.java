@@ -158,19 +158,22 @@ public class Def {
     public final static String NTPSYNC = "NTPSYNC";
 
     //Action for HTTP request service
-    public final static String ACTION_GET_ALL_INFO = "com.example.trdcmacpro.dvr_hammer.service.action.GET_ALL";
-    public final static String ACTION_GET_SYS_MODE = "com.example.trdcmacpro.dvr_hammer.service.action.GET_SYS";
-    public final static String ACTION_SET_SYS_MODE = "com.example.trdcmacpro.dvr_hammer.service.action.SET_SYS";
-    public final static String ACTION_GET_CAM_MODE = "com.example.trdcmacpro.dvr_hammer.service.action.GET_CAM";
-    public final static String ACTION_GET_INTERNET = "com.example.trdcmacpro.dvr_hammer.service.action.GET_INET";
-    public final static String ACTION_GET_WIRELESS = "com.example.trdcmacpro.dvr_hammer.service.action.GET_WIRELESS";
-    public final static String ACTION_GET_SECURITY = "com.example.trdcmacpro.dvr_hammer.service.action.GET_SECURITY";
-    public final static String ACTION_GET_ADMIN    = "com.example.trdcmacpro.dvr_hammer.service.action.GET_ADMIN";
+    public final static String ACTION_GET_ALL_INFO = "com.liteon.iView.service.action.GET_ALL";
+    public final static String ACTION_GET_SYS_MODE = "com.liteon.iView.service.action.GET_SYS";
+    public final static String ACTION_SET_SYS_MODE = "com.liteon.iView.service.action.SET_SYS";
+    public final static String ACTION_GET_CAM_MODE = "com.liteon.iView.service.action.GET_CAM";
+    public final static String ACTION_GET_INTERNET = "com.liteon.iView.service.action.GET_INET";
+    public final static String ACTION_GET_WIRELESS = "com.liteon.iView.service.action.GET_WIRELESS";
+    public final static String ACTION_GET_SECURITY = "com.liteon.iView.service.action.GET_SECURITY";
+    public final static String ACTION_GET_ADMIN    = "com.liteon.iView.service.action.GET_ADMIN";
+    public final static String ACTION_SET_TIMEZONE = "com.liteon.iView.service.action.SET_TIMEZONE";
 
     //Key for Intent extra
-    public final static String EXTRA_GET_SYS_MODE = "com.example.trdcmacpro.dvr_hammer.service.extra.GET_SYS";
-    public final static String EXTRA_SET_SYS_MODE = "com.example.trdcmacpro.dvr_hammer.service.extra.SET_SYS";
-    public final static String EXTRA_GET_CAM_MODE = "com.example.trdcmacpro.dvr_hammer.service.extra.GET_CAM";
+    public final static String EXTRA_GET_SYS_MODE = "com.liteon.iView.service.extra.GET_SYS";
+    public final static String EXTRA_SET_SYS_MODE = "com.liteon.iView.service.extra.SET_SYS";
+    public final static String EXTRA_GET_CAM_MODE = "com.liteon.iView.service.extra.GET_CAM";
+    public final static String EXTRA_TIMEZONE     = "com.liteon.iView.service.extra.TIMEZONE";
+    public final static String EXTRA_NTP_SERVER   = "com.liteon.iView.service.extra.NTP_SERVER";
 
     //Key for sharePreference
     public final static String SHARE_PREFERENCE = "com.liteon.iView.PREFERENCE_FILE_KEY";

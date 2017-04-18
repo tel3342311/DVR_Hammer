@@ -39,40 +39,34 @@ public class TimeZoneFragment extends Fragment {
     private String mNTPServer;
     private String mNTPSyncValue;
     private EditText mEdTextNtpServer;
-    //private RecyclerView mTimeZoneView;
     private ViewGroup mPicker;
-
     private String currentTimeZone;
-    private String currentServer;
-
+    private String currentNTPServer;
     private ImageView mConfirm;
-    public TimeZoneFragment() {
-        // Required empty public constructor
-    }
+    private static TimeZoneFragment timezoneFragment;
+
+    public TimeZoneFragment() {}
 
     public static TimeZoneFragment newInstance() {
-        TimeZoneFragment fragment = new TimeZoneFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
+        if (timezoneFragment == null) {
+            timezoneFragment = new TimeZoneFragment();
+            Bundle args = new Bundle();
+            timezoneFragment.setArguments(args);
+        }
+        return timezoneFragment;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_time_zone, container, false);
         findViews(view);
-        Context context = view.getContext();
-        //mTimeZoneView.setLayoutManager(new LinearLayoutManager(context));
-
         mEdTextNtpServer.addTextChangedListener(mTextWatcher);
         return view;
     }
 
     private void findViews(View rootView) {
         mEdTextNtpServer = (EditText) rootView.findViewById(R.id.edit_ntp_server);
-        //mTimeZoneView = (RecyclerView) rootView.findViewById(R.id.time_zone_list);
         mPicker = (ViewGroup) rootView.findViewById(R.id.picker_container);
         mConfirm = (ImageView) getActivity().findViewById(R.id.confirm_icon);
     }
@@ -95,9 +89,6 @@ public class TimeZoneFragment extends Fragment {
                 break;
             }
         }
-        //Toast.makeText(getContext(), "mTimeZoneList " + mTimeZoneList + ", mTimeZone " + mTimeZone + ",mNTPServer " + mNTPServer + ", mNTPSyncValue " + mNTPSyncValue + ", mTimeZoneList " + mTimeZoneList.toString(), Toast.LENGTH_LONG).show();
-
-        //mTimeZoneView.setAdapter(new TimeZoneItemRecyclerViewAdapter(list, mOnTimezoneselectListener));
         mEdTextNtpServer.setText(mNTPServer);
         setupPicker();
     }
@@ -122,19 +113,6 @@ public class TimeZoneFragment extends Fragment {
         }
     };
 
-    public interface OnTimeZoneFragmentInteractionListener {
-        void onTimeZoneFragmentInteraction(String timezone);
-    }
-
-    private OnTimeZoneFragmentInteractionListener mOnTimezoneselectListener = new OnTimeZoneFragmentInteractionListener() {
-        @Override
-        public void onTimeZoneFragmentInteraction(String timezone) {
-
-            currentTimeZone = timezone;
-            isSettingChanged();
-        }
-    };
-
     private TextWatcher mTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -148,6 +126,7 @@ public class TimeZoneFragment extends Fragment {
 
         @Override
         public void afterTextChanged(Editable s) {
+            currentNTPServer = s.toString();
             isSettingChanged();
         }
     };
@@ -159,5 +138,13 @@ public class TimeZoneFragment extends Fragment {
         } else {
             mConfirm.setEnabled(true);
         }
+    }
+
+    public String getCurrentTimeZone() {
+        return currentTimeZone;
+    }
+
+    public String getNTPServer() {
+        return currentNTPServer;
     }
 }

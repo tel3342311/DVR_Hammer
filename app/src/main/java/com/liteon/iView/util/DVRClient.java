@@ -747,4 +747,42 @@ public class DVRClient {
             throw new AssertionError(e);
         }
     }
+
+    public void setTimezone(String timezone, String ntpServer) {
+        try {
+            URL url = new URL(String.format(Def.DVR_Url, Def.adm_cgi));
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            if (!TextUtils.isEmpty(password)) {
+                urlConnection.setRequestProperty("Authorization", getAuthorizationHeader());
+            }
+            String syncValue = mSharedPref.getString(Def.SP_NTP_SYNC_VALUE, "300");
+            Uri.Builder builder = mUri.buildUpon()
+                    .appendQueryParameter("page", "ntp")
+                    .appendQueryParameter("time_zone", timezone)
+                    .appendQueryParameter("NTPServerIP", ntpServer)
+                    .appendQueryParameter("NTPSync", syncValue);
+
+            String query = builder.build().getEncodedQuery();
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            urlConnection.setUseCaches(false);
+            urlConnection.setRequestProperty("Content-Length", Integer.toString(query.getBytes().length));
+
+            OutputStream os = urlConnection.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(query);
+            writer.flush();
+            writer.close();
+            os.close();
+
+            int response = urlConnection.getResponseCode();
+            Log.i(TAG, "setTimezone to " + timezone + ", Response is " + response);
+            urlConnection.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
