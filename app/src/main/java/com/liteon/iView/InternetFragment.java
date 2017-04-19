@@ -3,12 +3,14 @@ package com.liteon.iView;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,11 +25,14 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.liteon.iView.util.Def;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.qqtheme.framework.picker.NumberPicker;
 import cn.qqtheme.framework.picker.OptionPicker;
 
 
@@ -174,14 +179,27 @@ public class InternetFragment extends Fragment {
         Type typeOfHashMap = new TypeToken<Map<String, String>>() { }.getType();
         Gson gson = new GsonBuilder().create();
         mModemList = gson.fromJson(json, typeOfHashMap);
-
+        if (mModemList == null) {
+            mModemList = new HashMap<>();
+            mModemList.put("AUTO","AUTO");
+            mModemList.put("HTC","HTC");
+            mModemList.put("CHT","CHT");
+        }
+        mModemTitle = "";
         for(Map.Entry entry: mModemList.entrySet()){
             if(mModem.equals(entry.getValue())){
                 mModemTitle = (String)entry.getKey();
                 break;
             }
         }
-        setupPicker();
+        ExtendedNumberPicker picker = new ExtendedNumberPicker(getContext(), null);
+        picker.setMinValue(0);
+        picker.setMaxValue(2);
+        picker.setDisplayedValues( new String[] { "Belgium", "France", "United Kingdom" } );
+        picker.setWrapSelectorWheel(false);
+        picker.setShowDividers(0);
+        mPicker.addView(picker);
+        //setupPicker();
         //Toast.makeText(getContext(), "APN " + mAPN + ", PIN " + mPIN + ", Dial_Num " + mDial_Num + ", User Name " + mUsername + ", Password " + mPassword + " modem list " + mModemList.toString(), Toast.LENGTH_LONG).show();
         //Set Default value
         mTextViewAPN.setText(mAPN);
@@ -281,4 +299,36 @@ public class InternetFragment extends Fragment {
             isSettingChanged();
         }
     };
+
+    class ExtendedNumberPicker extends android.widget.NumberPicker {
+
+        public ExtendedNumberPicker(Context context, AttributeSet attrs) {
+            super(context, attrs);
+
+            Class<?> numberPickerClass = null;
+            try {
+                numberPickerClass = Class.forName("android.widget.NumberPicker");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            Field selectionDivider = null;
+            try {
+                selectionDivider = numberPickerClass.getDeclaredField("mSelectionDivider");
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                selectionDivider.setAccessible(true);
+                selectionDivider.set(this, null);
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (Resources.NotFoundException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

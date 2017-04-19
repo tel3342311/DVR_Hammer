@@ -1,9 +1,8 @@
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:nestedScrollingEnabled="true"
-    tools:context="com.liteon.iView.InternetFragment">
+    android:nestedScrollingEnabled="true">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -147,7 +146,7 @@
 
         <LinearLayout
             android:id="@+id/picker_container"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:clickable="true"
             android:layout_height="@dimen/setting_timezone_picker_height"

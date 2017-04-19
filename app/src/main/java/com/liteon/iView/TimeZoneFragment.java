@@ -22,6 +22,7 @@ import com.liteon.iView.util.Def;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -79,7 +80,13 @@ public class TimeZoneFragment extends Fragment {
         Type typeOfHashMap = new TypeToken<Map<String, String>>() { }.getType();
         Gson gson = new GsonBuilder().create();
         mTimeZoneList = gson.fromJson(json, typeOfHashMap);
-        mTimeZone = sp.getString(Def.SP_TIMEZONE, "");
+        if (mTimeZoneList == null) {
+            mTimeZoneList = new HashMap<String,String>();
+            mTimeZoneList.put("UTC_0","UTC_0");
+            mTimeZoneList.put("UTC_1","UTC_1");
+            mTimeZoneList.put("UTC_2","UTC_2");
+        }
+        mTimeZone = sp.getString(Def.SP_TIMEZONE, "UTC_0");
         mNTPServer = sp.getString(Def.SP_NTPSERVER, "");
         mNTPSyncValue = sp.getString(Def.SP_NTP_SYNC_VALUE, "");
         mTimeZoneTitle = "";
