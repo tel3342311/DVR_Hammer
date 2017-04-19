@@ -82,7 +82,7 @@ public class TimeZoneFragment extends Fragment {
         mTimeZone = sp.getString(Def.SP_TIMEZONE, "");
         mNTPServer = sp.getString(Def.SP_NTPSERVER, "");
         mNTPSyncValue = sp.getString(Def.SP_NTP_SYNC_VALUE, "");
-
+        mTimeZoneTitle = "";
         for(Map.Entry entry: mTimeZoneList.entrySet()){
             if(mTimeZone.equals(entry.getValue())){
                 mTimeZoneTitle = (String)entry.getKey();
@@ -132,7 +132,7 @@ public class TimeZoneFragment extends Fragment {
     };
 
     private void isSettingChanged() {
-        if (TextUtils.equals(mEdTextNtpServer.getText(), mNTPServer) &&
+        if (TextUtils.equals(currentNTPServer, mNTPServer) &&
                 TextUtils.equals(mTimeZone, currentTimeZone)) {
             mConfirm.setEnabled(false);
         } else {

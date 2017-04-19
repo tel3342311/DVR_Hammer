@@ -25,6 +25,7 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -343,7 +344,7 @@ public class DVRClient {
             Document doc = Jsoup.parse(is, "UTF-8", url.toString());
             Elements elements = doc.select("select[name=time_zone] > option");
             for (Element e : elements) {
-                map.put(e.val(), e.text());
+                map.put(e.text(), e.val());
             }
 
             timeZoneListJson = mGson.toJson(map);
@@ -566,6 +567,7 @@ public class DVRClient {
         String dial_num = "";
         String username_3g = "";
         String password_3g = "";
+        String modem_name = "";
         Map<String, String> modemList = new HashMap<>();
         String modemListJson = "";
         //VPN setting
@@ -589,14 +591,23 @@ public class DVRClient {
 
             InputStream is = urlConnection.getInputStream();
             Document doc = Jsoup.parse(is, "UTF-8", url.toString());
-            Elements elements = doc.select("select[name=Dev3G] > option");
+            //Get current 3G modem
+            Elements elements = doc.getElementsByAttributeValue("language", "JavaScript");
+            String data = elements.first().data();
+            Pattern pattern= Pattern.compile("var dev_3g = \"(.*)\";");
+            Matcher matcher = pattern.matcher(data);
+
+            if (matcher.find()) {
+                modem_name = matcher.group(1);
+            }
+            Log.i(TAG, "Get modem_name, modem_name is " + modem_name);
+
+            //Get 3G modem list
+            elements = doc.select("select[name=Dev3G] > option");
             for (Element e : elements) {
                 modemList.put(e.text(), e.val());
             }
             modemListJson = mGson.toJson(modemList);
-            //Get map from json
-            //Type typeOfHashMap = new TypeToken<Map<String, String>>() { }.getType();
-            //Map<String, String> newMap = gson.fromJson(modemListJson, typeOfHashMap);
 
             Log.i(TAG, "Get 3GModem List, map is " + modemList.toString());
 
@@ -627,6 +638,7 @@ public class DVRClient {
             editor.putString(Def.SP_PIN3G, pin);
             editor.putString(Def.SP_DIAL3G, dial_num);
             editor.putString(Def.SP_USER3G, username_3g);
+            editor.putString(Def.SP_MODEM_NAME, modem_name);
             editor.putString(Def.SP_MODEM_LIST_JSON, modemListJson);
             editor.putString(Def.SP_PASSWORD3G, password_3g);
             editor.putString(Def.SP_PPTPSERVER, pptp_server);
@@ -757,7 +769,7 @@ public class DVRClient {
             }
             String syncValue = mSharedPref.getString(Def.SP_NTP_SYNC_VALUE, "300");
             Uri.Builder builder = mUri.buildUpon()
-                    .appendQueryParameter("page", "ntp")
+                    .appendQueryParameter(Def.PAGE, Def.KEY_PAGE_TIMEZONE)
                     .appendQueryParameter("time_zone", timezone)
                     .appendQueryParameter("NTPServerIP", ntpServer)
                     .appendQueryParameter("NTPSync", syncValue);
@@ -781,6 +793,111 @@ public class DVRClient {
             int response = urlConnection.getResponseCode();
             Log.i(TAG, "setTimezone to " + timezone + ", Response is " + response);
             urlConnection.disconnect();
+            //Save to share preference
+            if (response == HttpURLConnection.HTTP_OK) {
+                SharedPreferences.Editor editor = mSharedPref.edit();
+                editor.putString(Def.SP_TIMEZONE, timezone);
+                editor.putString(Def.SP_NTPSERVER, ntpServer);
+                editor.commit();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setRecordings(String recordingLength, String recordingChannel) {
+        try {
+            URL url = new URL(String.format(Def.DVR_Url, Def.camera_cgi));
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            if (!TextUtils.isEmpty(password)) {
+                urlConnection.setRequestProperty("Authorization", getAuthorizationHeader());
+            }
+            Uri.Builder builder = mUri.buildUpon()
+                    .appendQueryParameter(Def.PAGE, Def.KEY_PAGE_RECORDINGS)
+                    .appendQueryParameter(Def.VIDEO_LENGTH, recordingLength)
+                    .appendQueryParameter(Def.RECORDING_CHANNEL, recordingChannel);
+
+            String query = builder.build().getEncodedQuery();
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            urlConnection.setUseCaches(false);
+            urlConnection.setRequestProperty("Content-Length", Integer.toString(query.getBytes().length));
+
+            OutputStream os = urlConnection.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(query);
+            writer.flush();
+            writer.close();
+            os.close();
+
+            int response = urlConnection.getResponseCode();
+            Log.i(TAG, "Set recording length to " + recordingLength + ", Set recording Channel to " + recordingChannel + ", Response is " + response);
+            urlConnection.disconnect();
+            //Save to share preference
+            if (response == HttpURLConnection.HTTP_OK) {
+                SharedPreferences.Editor editor = mSharedPref.edit();
+                editor.putString(Def.SP_RECORDING_LENGTH, recordingLength);
+                editor.putString(Def.SP_RECORDING_CAMERA, recordingChannel);
+                editor.commit();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setInternets(String apn, String pin, String dial_num, String username, String password, String modem) {
+
+        try {
+            URL url = new URL(String.format(Def.DVR_Url, Def.net_cgi));
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            if (!TextUtils.isEmpty(password)) {
+                urlConnection.setRequestProperty("Authorization", getAuthorizationHeader());
+            }
+
+            Uri.Builder builder = mUri.buildUpon()
+                    .appendQueryParameter(Def.PAGE, Def.KEY_PAGE_WAN)
+                    .appendQueryParameter(Def.CONNECTIONTYPE, "3G")
+                    .appendQueryParameter(Def.APN3G, apn)
+                    .appendQueryParameter(Def.PIN3G, pin)
+                    .appendQueryParameter(Def.DIAL3G, dial_num)
+                    .appendQueryParameter(Def.USER3G, username)
+                    .appendQueryParameter(Def.PASSWORD3G, password)
+                    .appendQueryParameter(Def.DEV3G, modem);
+
+            String query = builder.build().getEncodedQuery();
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            urlConnection.setUseCaches(false);
+            urlConnection.setRequestProperty("Content-Length", Integer.toString(query.getBytes().length));
+
+            OutputStream os = urlConnection.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(query);
+            writer.flush();
+            writer.close();
+            os.close();
+
+            int response = urlConnection.getResponseCode();
+            Log.i(TAG, "Set Internets to, Response is " + response);
+            urlConnection.disconnect();
+            //Save to share preference
+            if (response == HttpURLConnection.HTTP_OK) {
+                SharedPreferences.Editor editor = mSharedPref.edit();
+                editor.putString(Def.SP_APN3G, apn);
+                editor.putString(Def.SP_PIN3G, pin);
+                editor.putString(Def.SP_DIAL3G, dial_num);
+                editor.putString(Def.SP_USER3G, username);
+                editor.putString(Def.SP_PASSWORD3G, password);
+                editor.putString(Def.SP_MODEM_NAME, modem);
+                editor.commit();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -22,6 +22,8 @@ public class DvrInfoService extends IntentService {
     private static final String ACTION_GET_SECURITY = Def.ACTION_GET_SECURITY;
     private static final String ACTION_GET_ADMIN    = Def.ACTION_GET_ADMIN;
     private static final String ACTION_SET_TIMEZONE = Def.ACTION_SET_TIMEZONE;
+    private static final String ACTION_SET_RECORDINGS = Def.ACTION_SET_RECORDINGS;
+    private static final String ACTION_SET_INTERNET = Def.ACTION_SET_INTERNET;
 
     // TODO: Rename parameters
     private static final String EXTRA_PARAM1 = "com.example.trdcmacpro.dvr_hammer.service.extra.PARAM1";
@@ -98,6 +100,18 @@ public class DvrInfoService extends IntentService {
                 String timezone = intent.getStringExtra(Def.EXTRA_TIMEZONE);
                 String ntpServer = intent.getStringExtra(Def.EXTRA_NTP_SERVER);
                 handleActionSetTimezone(timezone, ntpServer);
+            } else if (ACTION_SET_RECORDINGS.equals(action)) {
+                String recordingLength = intent.getStringExtra(Def.EXTRA_RECORDING_LENGTH);
+                String recordingChannel = intent.getStringExtra(Def.EXTRA_RECORDING_CHANNEL);
+                handleActionSetRecordings(recordingLength, recordingChannel);
+            } else if (ACTION_SET_INTERNET.equals(action)) {
+                String apn = intent.getStringExtra(Def.EXTRA_APN);
+                String pin = intent.getStringExtra(Def.EXTRA_PIN);
+                String dial_Num = intent.getStringExtra(Def.EXTRA_DIAL_NUM);
+                String username = intent.getStringExtra(Def.EXTRA_USERNAME_3G);
+                String password = intent.getStringExtra(Def.EXTRA_PASSWORD_3G);
+                String modem =intent.getStringExtra(Def.EXTRA_MODEM);
+                handleActionSetInternet(apn, pin, dial_Num, username, password, modem);
             }
         }
     }
@@ -161,6 +175,17 @@ public class DvrInfoService extends IntentService {
         DVRClient dvrClient = DVRClient.newInstance(getApplicationContext());
         dvrClient.setTimezone(timezone, ntpServer);
     }
+
+    private void handleActionSetRecordings(String recordingLength, String recordingChannel) {
+        DVRClient dvrClient = DVRClient.newInstance(getApplicationContext());
+        dvrClient.setRecordings(recordingLength, recordingChannel);
+    }
+
+    private void handleActionSetInternet(String apn, String pin, String dial_num, String username, String password, String modem) {
+        DVRClient dvrClient = DVRClient.newInstance(getApplicationContext());
+        dvrClient.setInternets(apn, pin, dial_num, username, password, modem);
+    }
+
     @Override
     public void onDestroy() {
         Log.v(TAG, "onDestroy");

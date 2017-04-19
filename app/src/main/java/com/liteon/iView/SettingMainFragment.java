@@ -93,9 +93,25 @@ public class SettingMainFragment extends Fragment {
                 intent.putExtra(Def.EXTRA_TIMEZONE, timezone);
                 intent.putExtra(Def.EXTRA_NTP_SERVER, ntpServer);
             } else if (position == SETTING_RECORDINGS) {
-
+                String recordingLength = ((RecordingSettingFragment)fragment).getRecordingLength();
+                String recordingChannel = ((RecordingSettingFragment)fragment).getRecordingChannel();
+                intent.setAction(Def.ACTION_SET_RECORDINGS);
+                intent.putExtra(Def.EXTRA_RECORDING_LENGTH, recordingLength);
+                intent.putExtra(Def.EXTRA_RECORDING_CHANNEL, recordingChannel);
             } else if (position == SETTING_INTERNET) {
-
+                String apn = ((InternetFragment)fragment).getCurrentAPN();
+                String pin = ((InternetFragment)fragment).getCurrentPIN();
+                String dial_Num = ((InternetFragment)fragment).getCurrentDialNum();
+                String username = ((InternetFragment)fragment).getCurrentUsername();
+                String password = ((InternetFragment)fragment).getCurrentPassword();
+                String modem = ((InternetFragment)fragment).getCurrentModem();
+                intent.setAction(Def.ACTION_SET_INTERNET);
+                intent.putExtra(Def.EXTRA_APN, apn);
+                intent.putExtra(Def.EXTRA_PIN, pin);
+                intent.putExtra(Def.EXTRA_DIAL_NUM, dial_Num);
+                intent.putExtra(Def.EXTRA_USERNAME_3G, username);
+                intent.putExtra(Def.EXTRA_PASSWORD_3G, password);
+                intent.putExtra(Def.EXTRA_MODEM, modem);
             } else if (position == SETTING_VPN) {
 
             } else if (position == SETTING_WIFI) {

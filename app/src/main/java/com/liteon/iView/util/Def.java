@@ -42,6 +42,7 @@ public class Def {
     //system
     public final static String USB_MODE = "listbox_usbmode";
     //camera
+    public final static String KEY_PAGE_RECORDINGS = "camera_configuration";
     public final static String VIDEO_LENGTH = "listbox_video_length";
     public final static String RECORDING_CHANNEL = "listbox_resolution";
     public final static String LIVE_CHANNEL = "listbox_capture";
@@ -167,13 +168,24 @@ public class Def {
     public final static String ACTION_GET_SECURITY = "com.liteon.iView.service.action.GET_SECURITY";
     public final static String ACTION_GET_ADMIN    = "com.liteon.iView.service.action.GET_ADMIN";
     public final static String ACTION_SET_TIMEZONE = "com.liteon.iView.service.action.SET_TIMEZONE";
-
+    public final static String ACTION_SET_RECORDINGS = "com.liteon.iView.service.action.SET_RECORDINGS";
+    public final static String ACTION_SET_INTERNET = "com.liteon.iView.service.action.SET_INTERNET";
+    public final static String ACTION_SET_WIFI = "com.liteon.iView.service.action.SET_WIFI";
+    public final static String ACTION_SET_VPN = "com.liteon.iView.service.action.SET_VPN";
     //Key for Intent extra
     public final static String EXTRA_GET_SYS_MODE = "com.liteon.iView.service.extra.GET_SYS";
     public final static String EXTRA_SET_SYS_MODE = "com.liteon.iView.service.extra.SET_SYS";
     public final static String EXTRA_GET_CAM_MODE = "com.liteon.iView.service.extra.GET_CAM";
     public final static String EXTRA_TIMEZONE     = "com.liteon.iView.service.extra.TIMEZONE";
     public final static String EXTRA_NTP_SERVER   = "com.liteon.iView.service.extra.NTP_SERVER";
+    public final static String EXTRA_RECORDING_LENGTH = "com.liteon.iView.service.extra.RECORDING_LENGTH";;
+    public final static String EXTRA_RECORDING_CHANNEL = "com.liteon.iView.service.extra.RECORDING_CHANNEL";
+    public final static String EXTRA_APN = "com.liteon.iView.service.extra.APN";
+    public final static String EXTRA_PIN = "com.liteon.iView.service.extra.PIN";
+    public final static String EXTRA_DIAL_NUM = "com.liteon.iView.service.extra.DIAL_NUM";
+    public final static String EXTRA_USERNAME_3G = "com.liteon.iView.service.extra.USERNAME_3G";
+    public final static String EXTRA_PASSWORD_3G = "com.liteon.iView.service.extra.PASSWORD_3G";
+    public final static String EXTRA_MODEM = "com.liteon.iView.service.extra.MODEM";
 
     //Key for sharePreference
     public final static String SHARE_PREFERENCE = "com.liteon.iView.PREFERENCE_FILE_KEY";
@@ -186,6 +198,7 @@ public class Def {
     public final static String SP_PIN3G = "SP_PIN3G";
     public final static String SP_DIAL3G = "SP_DIAL3G";
     public final static String SP_USER3G = "SP_USER3G";
+    public final static String SP_MODEM_NAME = "SP_MODEM_NAME";
     public final static String SP_MODEM_LIST_JSON = "SP_MODEM_LIST_JSON";
     public final static String SP_PASSWORD3G = "SP_PASSWORD3G";
     public final static String SP_PPTPSERVER = "SP_PPTPSERVER";
@@ -198,4 +211,6 @@ public class Def {
     public final static String SP_RECORDING_LENGTH = "SP_RECORDING_LENGTH";
     public final static String SP_RECORDING_CAMERA = "SP_RECORDING_CAMERA";
     public final static String SP_PREVIEW_CAMERA = "SP_PREVIEW_CAMERA";
+
+
 }
