@@ -24,7 +24,7 @@ public class Def {
     public final static String adm_cgi = "cgi-bin/adm.cgi";
     //DVR network setting
     public final static String net_setting = "internet/wan.shtml";
-    public final static String net_cgi = "cgi-bin/wireless.cgi";
+    public final static String net_cgi = "cgi-bin/internet.cgi";
     //DVR security setting
     public final static String security_setting = "wireless/security.shtml";
     public final static String security_cgi = "cgi-bin/wireless.cgi";
@@ -91,22 +91,22 @@ public class Def {
     public final static String RX_STREAM = "rx_stream";
     //internet
     public final static String KEY_PAGE_WAN   = "wan";
-    public final static String CONNECTIONTYPE = "connectiontype";
+    public final static String CONNECTIONTYPE = "connectionType";
     public final static String STATICIP       = "staticip";
     public final static String STATICNETMASK  = "staticnetmask";
     public final static String STATICGATEWAY  = "staticgateway";
     public final static String STATICPRIDNS   = "staticpridns";
     public final static String STATICSECDNS   = "staticsecdns";
     public final static String HOSTNAME       = "hostname";
-    public final static String APN3G          = "apn3g";
-    public final static String PIN3G          = "pin3g";
-    public final static String DIAL3G         = "dial3g";
-    public final static String USER3G         = "user3g";
-    public final static String PASSWORD3G     = "password3g";
-    public final static String DEV3G          = "dev3g";
-    public final static String PPTPSERVER     = "pptpserver";
-    public final static String PPTPUSER       = "pptpuser";
-    public final static String PPTPPASS       = "pptppass";
+    public final static String APN3G          = "APN3G";
+    public final static String PIN3G          = "PIN3G";
+    public final static String DIAL3G         = "Dial3G";
+    public final static String USER3G         = "User3G";
+    public final static String PASSWORD3G     = "Password3G";
+    public final static String DEV3G          = "Dev3G";
+    public final static String PPTPSERVER     = "pptpServer";
+    public final static String PPTPUSER       = "pptpUser";
+    public final static String PPTPPASS       = "pptpPass";
     public final static String MACCLONEENBL   = "maccloneenbl";
     public final static String MACCLONEMAC    = "macclonemac";
     //security
