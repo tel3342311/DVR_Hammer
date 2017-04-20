@@ -902,4 +902,51 @@ public class DVRClient {
             e.printStackTrace();
         }
     }
+
+    public void setVPNs(String pptpServer, String pptpUsername, String pptpPassword) {
+        try {
+            URL url = new URL(String.format(Def.DVR_Url, Def.net_cgi));
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            if (!TextUtils.isEmpty(password)) {
+                urlConnection.setRequestProperty("Authorization", getAuthorizationHeader());
+            }
+
+            Uri.Builder builder = mUri.buildUpon()
+                    .appendQueryParameter(Def.PAGE, Def.KEY_PAGE_WAN)
+                    .appendQueryParameter(Def.PPTPSERVER, pptpServer)
+                    .appendQueryParameter(Def.PPTPUSER, pptpUsername)
+                    .appendQueryParameter(Def.PPTPPASS, pptpPassword);
+
+            String query = builder.build().getEncodedQuery();
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            urlConnection.setUseCaches(false);
+            urlConnection.setRequestProperty("Content-Length", Integer.toString(query.getBytes().length));
+
+            OutputStream os = urlConnection.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(query);
+            writer.flush();
+            writer.close();
+            os.close();
+
+            int response = urlConnection.getResponseCode();
+            Log.i(TAG, "Set VPNs to , Response is " + response);
+            urlConnection.disconnect();
+            //Save to share preference
+            if (response == HttpURLConnection.HTTP_OK) {
+                SharedPreferences.Editor editor = mSharedPref.edit();
+                editor.putString(Def.SP_PPTPSERVER, pptpServer);
+                editor.putString(Def.SP_PPTPUSER, pptpUsername);
+                editor.putString(Def.SP_PPTPPASS, pptpPassword);
+                editor.commit();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -113,7 +113,13 @@ public class SettingMainFragment extends Fragment {
                 intent.putExtra(Def.EXTRA_PASSWORD_3G, password);
                 intent.putExtra(Def.EXTRA_MODEM, modem);
             } else if (position == SETTING_VPN) {
-
+                String pPTPServer = ((VpnSettingFragment)fragment).getCurrentServer();
+                String pPTPUsername = ((VpnSettingFragment)fragment).getCurrentUsername();
+                String pPTPPassword = ((VpnSettingFragment)fragment).getCurrentPassword();
+                intent.setAction(Def.ACTION_SET_VPN);
+                intent.putExtra(Def.EXTRA_PPTP_SERVER, pPTPServer);
+                intent.putExtra(Def.EXTRA_PPTP_USERNAME,pPTPUsername);
+                intent.putExtra(Def.EXTRA_PPTP_PASSWORD,pPTPPassword);
             } else if (position == SETTING_WIFI) {
 
             }

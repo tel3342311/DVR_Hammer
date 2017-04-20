@@ -186,6 +186,9 @@ public class Def {
     public final static String EXTRA_USERNAME_3G = "com.liteon.iView.service.extra.USERNAME_3G";
     public final static String EXTRA_PASSWORD_3G = "com.liteon.iView.service.extra.PASSWORD_3G";
     public final static String EXTRA_MODEM = "com.liteon.iView.service.extra.MODEM";
+    public final static String EXTRA_PPTP_SERVER = "com.liteon.iView.service.extra.pptpserver";
+    public final static String EXTRA_PPTP_USERNAME = "com.liteon.iView.service.extra.pptpusername";
+    public final static String EXTRA_PPTP_PASSWORD = "com.liteon.iView.service.extra.pptppassword";
 
     //Key for sharePreference
     public final static String SHARE_PREFERENCE = "com.liteon.iView.PREFERENCE_FILE_KEY";
@@ -204,6 +207,7 @@ public class Def {
     public final static String SP_PPTPSERVER = "SP_PPTPSERVER";
     public final static String SP_PPTPUSER = "SP_PPTPUSER";
     public final static String SP_PPTPPASS = "SP_PPTPPASS";
+    public final static String SP_PPTPCLIENT = "SP_PPTPCLIENT";
     public final static String SP_TIMEZONE_LIST = "SP_TIMEZONE_LIST";
     public final static String SP_TIMEZONE = "SP_TIMEZONE";
     public final static String SP_NTPSERVER = "SP_NTPSERVER";
