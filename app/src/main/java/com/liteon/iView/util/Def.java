@@ -30,7 +30,7 @@ public class Def {
     public final static String security_cgi = "cgi-bin/wireless.cgi";
     //DVR wifi setting
     public final static String wifi_setting = "wireless/basic.shtml";
-
+    public final static String wifi_cgi = "cgi-bin/wireless.cgi";
     //current DVR version
     public final static String status_page = "adm/status.shtml";
 
@@ -189,7 +189,10 @@ public class Def {
     public final static String EXTRA_PPTP_SERVER = "com.liteon.iView.service.extra.pptpserver";
     public final static String EXTRA_PPTP_USERNAME = "com.liteon.iView.service.extra.pptpusername";
     public final static String EXTRA_PPTP_PASSWORD = "com.liteon.iView.service.extra.pptppassword";
-
+    public final static String EXTRA_SSID = "com.liteon.iView.service.extra.ssid";
+    public final static String EXTRA_SECURITYMODE = "com.liteon.iView.service.extra.securitymode";
+    public final static String EXTRA_ENCRYPTTYPE = "com.liteon.iView.service.extra.encrypttype";
+    public final static String EXTRA_PASSPHASE = "com.liteon.iView.service.extra.passphase";
     //Key for sharePreference
     public final static String SHARE_PREFERENCE = "com.liteon.iView.PREFERENCE_FILE_KEY";
     public final static String SP_SSID = "SP_SSID";
@@ -197,6 +200,7 @@ public class Def {
     public final static String SP_SECURITY = "SP_SECURITY";
     public final static String SP_ENCRYPTTYPE = "SP_ENCRYPTTYPE";
     public final static String SP_PASSPHASE = "SP_PASSPHASE";
+    public final static String SP_KEYRENEW = "SP_KEYRENEW";
     public final static String SP_APN3G = "SP_APN3G";
     public final static String SP_PIN3G = "SP_PIN3G";
     public final static String SP_DIAL3G = "SP_DIAL3G";
@@ -215,6 +219,6 @@ public class Def {
     public final static String SP_RECORDING_LENGTH = "SP_RECORDING_LENGTH";
     public final static String SP_RECORDING_CAMERA = "SP_RECORDING_CAMERA";
     public final static String SP_PREVIEW_CAMERA = "SP_PREVIEW_CAMERA";
-
+    public final static String SP_RECORDING_LIST = "SP_RECORDING_LIST";
 
 }

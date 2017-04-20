@@ -25,7 +25,7 @@ public class DvrInfoService extends IntentService {
     private static final String ACTION_SET_RECORDINGS = Def.ACTION_SET_RECORDINGS;
     private static final String ACTION_SET_INTERNET = Def.ACTION_SET_INTERNET;
     private static final String ACTION_SET_VPN = Def.ACTION_SET_VPN;
-    private static final String ACTION_SET_WFIF = Def.ACTION_SET_WIFI;
+    private static final String ACTION_SET_WIFI = Def.ACTION_SET_WIFI;
 
     // TODO: Rename parameters
     private static final String EXTRA_PARAM1 = "com.example.trdcmacpro.dvr_hammer.service.extra.PARAM1";
@@ -119,6 +119,12 @@ public class DvrInfoService extends IntentService {
                 String PPTPUsername = intent.getStringExtra(Def.EXTRA_PPTP_USERNAME);
                 String PPTPPassword = intent.getStringExtra(Def.EXTRA_PPTP_PASSWORD);
                 handleActionSetVPN(PPTPServer, PPTPUsername, PPTPPassword);
+            } else if (ACTION_SET_WIFI.equals(action)) {
+                String ssid = intent.getStringExtra(Def.EXTRA_SSID);
+                String securityMode = intent.getStringExtra(Def.EXTRA_SECURITYMODE);
+                String encryptType = intent.getStringExtra(Def.EXTRA_ENCRYPTTYPE);
+                String passPhase =intent.getStringExtra(Def.EXTRA_PASSPHASE);
+                handleActionSetWifi(ssid,securityMode,encryptType,passPhase);
             }
         }
     }
@@ -196,6 +202,11 @@ public class DvrInfoService extends IntentService {
     private void handleActionSetVPN(String pptpServer, String pptpUsername, String pptpPassword) {
         DVRClient dvrClient = DVRClient.newInstance(getApplicationContext());
         dvrClient.setVPNs(pptpServer,pptpUsername,pptpPassword);
+    }
+
+    private void handleActionSetWifi(String ssid, String securityMode, String encryptType, String passPhase) {
+        DVRClient dvrClient = DVRClient.newInstance(getApplicationContext());
+        dvrClient.setWIFIs(ssid,securityMode,encryptType,passPhase);
     }
 
     @Override

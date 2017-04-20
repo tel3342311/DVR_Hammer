@@ -505,6 +505,7 @@ public class DVRClient {
         String securityMode = "";
         String encryptType = "";
         String passPhase = "";
+        String keyRenew = "";
         try {
             URL url = new URL(String.format(Def.DVR_Url, Def.security_setting));
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -536,11 +537,18 @@ public class DVRClient {
                 encryptType = matcher.group(1);
             }
             //get Passphase
-            pattern = Pattern.compile("WPAPSK[0] = \"(.*)\"");
+            pattern = Pattern.compile("WPAPSK\\[0\\] = \"(.*)\"");
             matcher = pattern.matcher(data);
             if (matcher.find()) {
                 passPhase = matcher.group(1);
             }
+            //get Key renew interval
+            pattern = Pattern.compile("RekeyMethod = str\\.split\\(\";\"\\);\n\tstr = \"(.*)\";");
+            matcher = pattern.matcher(data);
+            if (matcher.find()) {
+                keyRenew = matcher.group(1);
+            }
+            Log.i(TAG, "Get Key Renew Interval" + keyRenew);
             Log.i(TAG, "Get passphase is " + passPhase);
             Log.i(TAG, "Get securityMode is " + securityMode);
             Log.i(TAG, "Get encrypType is " + encryptType);
@@ -553,6 +561,7 @@ public class DVRClient {
             editor.putString(Def.SP_SECURITY, securityMode);
             editor.putString(Def.SP_ENCRYPTTYPE, encryptType);
             editor.putString(Def.SP_PASSPHASE, passPhase);
+            editor.putString(Def.SP_KEYRENEW, keyRenew);
             editor.commit();
 
         } catch (IOException e) {
@@ -725,6 +734,12 @@ public class DVRClient {
             int response = urlConnection.getResponseCode();
             Log.i(TAG, "Get recording clips , Response is " + response);
             urlConnection.disconnect();
+            String recordingListJson = mGson.toJson(list);
+            if (response == HttpURLConnection.HTTP_OK) {
+                SharedPreferences.Editor editor = mSharedPref.edit();
+                editor.putString(Def.SP_RECORDING_LIST, recordingListJson);
+                editor.commit();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -942,6 +957,118 @@ public class DVRClient {
                 editor.putString(Def.SP_PPTPSERVER, pptpServer);
                 editor.putString(Def.SP_PPTPUSER, pptpUsername);
                 editor.putString(Def.SP_PPTPPASS, pptpPassword);
+                editor.commit();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setWIFIs(String ssid, String securityMode, String encryptType, String passPhase) {
+
+        setWifiBasic(ssid);
+        setWifiSecurity(securityMode,encryptType,passPhase);
+    }
+
+    private void setWifiBasic(String ssid) {
+        try {
+            URL url = new URL(String.format(Def.DVR_Url, Def.wifi_cgi));
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            if (!TextUtils.isEmpty(password)) {
+                urlConnection.setRequestProperty("Authorization", getAuthorizationHeader());
+            }
+
+            Uri.Builder builder = mUri.buildUpon()
+                    .appendQueryParameter(Def.PAGE, Def.KEY_PAGE_BASIC)
+                    .appendQueryParameter(Def.WLAN_CONF, "2860")
+                    .appendQueryParameter(Def.MSSID_0, ssid);
+
+            String query = builder.build().getEncodedQuery();
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            urlConnection.setUseCaches(false);
+            urlConnection.setRequestProperty("Content-Length", Integer.toString(query.getBytes().length));
+
+            OutputStream os = urlConnection.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(query);
+            writer.flush();
+            writer.close();
+            os.close();
+
+            int response = urlConnection.getResponseCode();
+            Log.i(TAG, "Set setWifiBasic SSID to " + ssid + ", Response is " + response);
+            urlConnection.disconnect();
+            //Save to share preference
+            if (response == HttpURLConnection.HTTP_OK) {
+                SharedPreferences.Editor editor = mSharedPref.edit();
+                editor.putString(Def.SP_SSID, ssid);
+                editor.commit();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setWifiSecurity(String securityMode, String encryptType, String passPhase) {
+        try {
+            URL url = new URL(String.format(Def.DVR_Url, Def.wifi_cgi));
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            if (!TextUtils.isEmpty(password)) {
+                urlConnection.setRequestProperty("Authorization", getAuthorizationHeader());
+            }
+            String cipher = "0";
+            if (TextUtils.equals(encryptType, "AES") || TextUtils.equals(encryptType, "TKIPAES")) {
+                cipher = "1";
+            }
+            String security;
+            if (TextUtils.equals(securityMode, "OPEN")) {
+                security = "Disable";
+            } else {
+                security = securityMode;
+            }
+            String keyRenew = mSharedPref.getString(Def.SP_KEYRENEW, "");
+            Uri.Builder builder = mUri.buildUpon()
+                    .appendQueryParameter(Def.PAGE, Def.KEY_PAGE_SECURITY)
+                    .appendQueryParameter(Def.WLAN_CONF, "2860")
+                    .appendQueryParameter(Def.SSIDINDEX, "0")
+                    .appendQueryParameter(Def.SECURITY_MODE, security);
+
+            if (!TextUtils.equals(security,"Disable" )) {
+                builder.appendQueryParameter(Def.CIPHER, cipher)
+                        .appendQueryParameter(Def.PASSPHRASE, passPhase)
+                        .appendQueryParameter(Def.KEYRENEWALINTERVAL, keyRenew);
+            }
+            String query = builder.build().getEncodedQuery();
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
+            urlConnection.setUseCaches(false);
+            urlConnection.setRequestProperty("Content-Length", Integer.toString(query.getBytes().length));
+
+            OutputStream os = urlConnection.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(query);
+            writer.flush();
+            writer.close();
+            os.close();
+
+            int response = urlConnection.getResponseCode();
+            Log.i(TAG, "Set setWifiSecurity securityMode to " + securityMode + ", Response is " + response);
+            urlConnection.disconnect();
+            //Save to share preference
+            if (response == HttpURLConnection.HTTP_OK) {
+                SharedPreferences.Editor editor = mSharedPref.edit();
+                editor.putString(Def.SP_SECURITY, securityMode);
+                editor.putString(Def.SP_PASSPHASE, passPhase);
+                editor.putString(Def.SP_ENCRYPTTYPE,encryptType);
                 editor.commit();
             }
 

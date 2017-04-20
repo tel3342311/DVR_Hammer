@@ -121,7 +121,15 @@ public class SettingMainFragment extends Fragment {
                 intent.putExtra(Def.EXTRA_PPTP_USERNAME,pPTPUsername);
                 intent.putExtra(Def.EXTRA_PPTP_PASSWORD,pPTPPassword);
             } else if (position == SETTING_WIFI) {
-
+                String ssid = ((WifiSettingFragment)fragment).getCurrentSsid();
+                String securityMode = ((WifiSettingFragment)fragment).getCurrentSecurityMode();
+                String encryptType = ((WifiSettingFragment)fragment).getCurrentEncryptType();
+                String passPhase = ((WifiSettingFragment)fragment).getCurrentPassPhase();
+                intent.setAction(Def.ACTION_SET_WIFI);
+                intent.putExtra(Def.EXTRA_SSID, ssid);
+                intent.putExtra(Def.EXTRA_SECURITYMODE, securityMode);
+                intent.putExtra(Def.EXTRA_ENCRYPTTYPE, encryptType);
+                intent.putExtra(Def.EXTRA_PASSPHASE, passPhase);
             }
             intent.setClass(getActivity(), DvrInfoService.class);
             getContext().startService(intent);
