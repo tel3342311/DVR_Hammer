@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.liteon.iView.util.Def;
+import com.liteon.iView.util.ExtendNumberPicker;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -32,7 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.qqtheme.framework.picker.NumberPicker;
+import android.widget.NumberPicker;
 import cn.qqtheme.framework.picker.OptionPicker;
 
 
@@ -58,38 +59,13 @@ public class InternetFragment extends Fragment {
     private ViewGroup mPicker;
     private ImageView mConfirm;
     private View mRootView;
-
-    public String getCurrentAPN() {
-        return currentAPN;
-    }
-
-    public String getCurrentPIN() {
-        return currentPIN;
-    }
-
-    public String getCurrentDialNum() {
-        return currentDialNum;
-    }
-
-    public String getCurrentUsername() {
-        return currentUsername;
-    }
-
-    public String getCurrentPassword() {
-        return currentPassword;
-    }
-
-    public String getCurrentModem() {
-        return currentModem;
-    }
-
     private String currentAPN;
     private String currentPIN;
     private String currentDialNum;
     private String currentUsername;
     private String currentPassword;
     private String currentModem;
-
+    private ExtendNumberPicker mNumPicker;
     private static InternetFragment mFragment;
     public InternetFragment() {
         // Required empty public constructor
@@ -136,9 +112,7 @@ public class InternetFragment extends Fragment {
 
         @Override
         public void onWheeled(int index, String modem) {
-            Log.i("Modem", modem);
-            currentModem = mModemList.get(modem);
-            isSettingChanged();
+
         }
     };
 
@@ -192,13 +166,13 @@ public class InternetFragment extends Fragment {
                 break;
             }
         }
-        ExtendedNumberPicker picker = new ExtendedNumberPicker(getContext(), null);
-        picker.setMinValue(0);
-        picker.setMaxValue(2);
-        picker.setDisplayedValues( new String[] { "Belgium", "France", "United Kingdom" } );
-        picker.setWrapSelectorWheel(false);
-        picker.setShowDividers(0);
-        mPicker.addView(picker);
+        mNumPicker = new ExtendNumberPicker(getContext(), null);
+        mNumPicker.setMinValue(0);
+        mNumPicker.setMaxValue(mModemList.size() - 1);
+        mNumPicker.setDisplayedValues(mModemList.keySet().toArray(new String[0]));
+        mNumPicker.setWrapSelectorWheel(false);
+        mNumPicker.setOnValueChangedListener(mOnValueChangeListener);
+        mPicker.addView(mNumPicker);
         //setupPicker();
         //Toast.makeText(getContext(), "APN " + mAPN + ", PIN " + mPIN + ", Dial_Num " + mDial_Num + ", User Name " + mUsername + ", Password " + mPassword + " modem list " + mModemList.toString(), Toast.LENGTH_LONG).show();
         //Set Default value
@@ -300,35 +274,40 @@ public class InternetFragment extends Fragment {
         }
     };
 
-    class ExtendedNumberPicker extends android.widget.NumberPicker {
 
-        public ExtendedNumberPicker(Context context, AttributeSet attrs) {
-            super(context, attrs);
 
-            Class<?> numberPickerClass = null;
-            try {
-                numberPickerClass = Class.forName("android.widget.NumberPicker");
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+    private android.widget.NumberPicker.OnValueChangeListener mOnValueChangeListener = new android.widget.NumberPicker.OnValueChangeListener() {
+        @Override
+        public void onValueChange(android.widget.NumberPicker picker, int oldVal, int newVal) {
+            String modem = picker.getDisplayedValues()[newVal];
+            Log.i("Modem", modem);
 
-            Field selectionDivider = null;
-            try {
-                selectionDivider = numberPickerClass.getDeclaredField("mSelectionDivider");
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                selectionDivider.setAccessible(true);
-                selectionDivider.set(this, null);
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            } catch (Resources.NotFoundException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            currentModem = mModemList.get(modem);
+            isSettingChanged();
         }
+    };
+
+    public String getCurrentAPN() {
+        return currentAPN;
+    }
+
+    public String getCurrentPIN() {
+        return currentPIN;
+    }
+
+    public String getCurrentDialNum() {
+        return currentDialNum;
+    }
+
+    public String getCurrentUsername() {
+        return currentUsername;
+    }
+
+    public String getCurrentPassword() {
+        return currentPassword;
+    }
+
+    public String getCurrentModem() {
+        return currentModem;
     }
 }
