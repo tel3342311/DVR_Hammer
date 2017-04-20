@@ -20,6 +20,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.liteon.iView.service.DvrInfoService;
 import com.liteon.iView.util.DVRClient;
 import com.liteon.iView.util.Def;
 import com.liteon.iView.util.RecordingItem;
@@ -261,9 +262,11 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
             if (position == 0) {
                 mToolBarPreview.setVisibility(View.VISIBLE);
                 mHandlerTime.postDelayed(HideUIControl,1500);
+                setDVRMode(Def.RECORDING_MODE);
             } else if (position == 1) {
                 mToolBarRecordings.setVisibility(View.VISIBLE);
                 mHandlerTime.removeCallbacks(HideUIControl);
+                setDVRMode(Def.STORAGE_MODE);
             } else if (position == 2) {
                 mToolBarSetting.setVisibility(View.VISIBLE);
                 mHandlerTime.removeCallbacks(HideUIControl);
@@ -312,6 +315,14 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
             }
             return super.getPageTitle(position);
         }
+    }
+
+    private void setDVRMode(String mode) {
+        Intent intent = new Intent();
+        intent.setAction(Def.ACTION_SET_SYS_MODE);
+        intent.putExtra(Def.EXTRA_SET_SYS_MODE, mode);
+        intent.setClass(MainActivity.this, DvrInfoService.class);
+        startService(intent);
     }
 
     @Override

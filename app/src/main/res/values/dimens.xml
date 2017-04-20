@@ -15,7 +15,8 @@
     <dimen name="preview_icon_thumbnail">68dp</dimen>
     <dimen name="preview_margin_right_thumbnail">12dp</dimen>
     <dimen name="preview_margin_bottom_thumbnail">64dp</dimen>
-
+    <!-- recordings page-->
+    <dimen name="recordings_list_item_height">60dp</dimen>
     <!--setting page-->
     <dimen name="setting_main_icon_height">170dp</dimen>
     <dimen name="setting_main_icon_margin">10dp</dimen>

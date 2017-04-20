@@ -1,6 +1,7 @@
 package com.liteon.iView;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,13 +11,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.liteon.iView.service.DvrInfoService;
 import com.liteon.iView.util.DVRClient;
 import com.liteon.iView.util.Def;
 import com.liteon.iView.util.RecordingItem;
 import com.liteon.iView.util.VideoItemRecyclerViewAdapter;
 
+import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A fragment representing a list of Items.
@@ -33,6 +39,7 @@ public class ItemFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
     private DVRClient mDvrClient;
+    private List<RecordingItem> mlist;
     private static ItemFragment mFragment;
     public void onSysModeChange(String mode) {
         if (mode.equals(Def.STORAGE_MODE)) {
@@ -41,43 +48,24 @@ public class ItemFragment extends Fragment {
                 public void run() {
                     super.run();
                     mDvrClient = DVRClient.newInstance(getContext());
-                    final List<RecordingItem> list = mDvrClient.getRecordingList();
+                    mlist = mDvrClient.getRecordingList();
 
                     recyclerView.post(new Runnable() {
                         @Override
                         public void run() {
-                            recyclerView.setAdapter(new VideoItemRecyclerViewAdapter(list, mListener));
+                            recyclerView.setAdapter(new VideoItemRecyclerViewAdapter(mlist, mListener));
                         }
                     });
                 }
             }.start();
         } else {
-            ((MainActivity) getActivity()).showSnackBar("Please change DVR mode to continue.", "Change to Storage mode", mOnSnackBarClickListener);
+            SharedPreferences sp = getContext().getSharedPreferences(Def.SHARE_PREFERENCE, Context.MODE_PRIVATE);
+            String json = sp.getString(Def.SP_RECORDING_LIST, "");
+            Type typeOfList = new TypeToken<List<RecordingItem>>() { }.getType();
+            Gson gson = new GsonBuilder().create();
+            mlist = gson.fromJson(json, typeOfList);
+            recyclerView.setAdapter(new VideoItemRecyclerViewAdapter(mlist, mListener));
         }
-    }
-
-
-    private View.OnClickListener mOnSnackBarClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Log.v(TAG, "snackbar click");
-            setDVRMode();
-        }
-    };
-
-    private void setDVRMode() {
-        Intent intent = new Intent();
-        intent.setAction(Def.ACTION_SET_SYS_MODE);
-        intent.putExtra(Def.EXTRA_SET_SYS_MODE, Def.STORAGE_MODE);
-        intent.setClass(getActivity(), DvrInfoService.class);
-        getContext().startService(intent);
-    }
-
-    private void checkDVRMode() {
-        Intent intent = new Intent();
-        intent.setAction(Def.ACTION_GET_SYS_MODE);
-        intent.setClass(getActivity(), DvrInfoService.class);
-        getContext().startService(intent);
     }
 
     public ItemFragment() {
@@ -142,5 +130,12 @@ public class ItemFragment extends Fragment {
     public void onStart() {
         super.onStart();
         Log.d(TAG,"onStart called");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        onSysModeChange(Def.RECORDING_MODE);
+
     }
 }
