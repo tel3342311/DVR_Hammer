@@ -8,25 +8,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <TextView
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="Records"
-            android:textSize="24sp"
-            android:layout_gravity="center"
-            android:id="@+id/toolbar_title" />
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Records"
+                android:textSize="24sp"
+                android:layout_centerInParent="true"
+                android:id="@+id/toolbar_title" />
+            <ImageView
+                android:id="@+id/video_back"
+                android:layout_width="@dimen/menu_icon_size"
+                android:layout_height="@dimen/menu_icon_size"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:background="@drawable/video_back"
+                android:visibility="invisible"/>
+        </RelativeLayout>
+c
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <ImageView
+            <include
                 android:id="@+id/select_all"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:src="@drawable/records_select"/>
+                layout="@layout/icon_select_all"/>
             <ImageView
                 android:id="@+id/save_to_phone"
                 android:layout_width="0dp"

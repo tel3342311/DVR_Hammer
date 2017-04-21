@@ -33,7 +33,6 @@
         android:layout_alignParentEnd="true"
         android:background="@drawable/menu_screenshots"
         android:clickable="true"
-        android:elevation="6dp"
-        app:elevation="6dp" />
+        android:elevation="6dp" />
 
 </RelativeLayout>

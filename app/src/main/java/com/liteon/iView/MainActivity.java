@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     private ImageView mSetting;
     private boolean showMenu = true;
     private DVRClient mDvrClient;
-    private int PAGE_COUNT = 3;
+    private int PAGE_COUNT = 4;
     private View loadingIndicator;
     private Handler mHandlerTime = new Handler();
     private boolean isTimerEnable = true;
@@ -48,6 +48,18 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     private String mSystemMode = Def.RECORDING_MODE;
     private ImageView mCamera1;
     private ImageView mCamera2;
+    private ImageView mVideoPageBack;
+    private View mSelectAll;
+
+    public RecordingItem getCurrentVideoItem() {
+        return mCurrentVideoItem;
+    }
+
+    public void setCurrentVideoItem(RecordingItem mCurrentVideoItem) {
+        this.mCurrentVideoItem = mCurrentVideoItem;
+    }
+
+    private RecordingItem mCurrentVideoItem;
 
     BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
 
@@ -56,6 +68,10 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
 
             String mode = intent.getStringExtra(Def.EXTRA_GET_SYS_MODE);
             mSystemMode = mode;
+            if (mSystemMode.equals(Def.RECORDING_MODE) && mViewPager.getCurrentItem() == 0) {
+                Fragment frag = mAdapter.getItem(mViewPager.getCurrentItem());
+                ((PreviewFragment)frag).onSystemReady();
+            }
         }
     };
 
@@ -86,57 +102,75 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     {
         public void run() {
 
-            if (showMenu) {
+            if (showMenu && (mViewPager.getCurrentItem() == 0 || mViewPager.getCurrentItem() == 3)) {
                 mBottomMenu.setVisibility(View.GONE);
+
+                Animation animToolbar = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.toolbar_hide);
+                animToolbar.setAnimationListener(mToolbarAnimation);
+                if (mViewPager.getCurrentItem() == 3)
+                    mToolBarRecordings.startAnimation(animToolbar);
+                else
+                    mToolBarPreview.startAnimation(animToolbar);
+
+
                 Animation animBottom = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bottom_hide);
-                animBottom.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        mBottomMenu.setVisibility(View.INVISIBLE);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
-                Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.toolbar_hide);
-                anim.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-                        mToolBarPreview.setVisibility(View.INVISIBLE);
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
+                animBottom.setAnimationListener(mBottomBarAnimation);
                 mBottomMenu.startAnimation(animBottom);
-                mToolBarPreview.startAnimation(anim);
+
                 showMenu = false;
             }
+        }
+    };
+
+    private Animation.AnimationListener mToolbarAnimation = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+            mToolBarPreview.setVisibility(View.INVISIBLE);
+            if (mViewPager.getCurrentItem() == 3)
+                mToolBarRecordings.setVisibility(View.INVISIBLE);
+            else
+                mToolBarPreview.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
 
         }
     };
 
+    private Animation.AnimationListener mBottomBarAnimation = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            if (mViewPager.getCurrentItem() == 3 || mViewPager.getCurrentItem() == 0) {
+                mBottomMenu.setVisibility(View.INVISIBLE);
+            }
+            if (mViewPager.getCurrentItem() == 3) {
+                VideoFragment frag = (VideoFragment)(mAdapter.getItem(mViewPager.getCurrentItem()));
+                frag.showVideoControl(false);
+            }
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+
+        }
+    };
     private void findViews() {
         mToolBarPreview = (Toolbar) findViewById(R.id.toolbar_preview);
         mToolBarRecordings = (Toolbar) findViewById(R.id.toolbar_recordings);
         mToolBarSetting = (Toolbar) findViewById(R.id.toolbar_setting);
 
         mTitleView = (TextView) findViewById(R.id.toolbar_title);
-        mViewPager = (ViewPager) findViewById(R.id.content);
+        mViewPager = (ViewPager) findViewById(R.id.video_date);
 
         mBottomMenu = findViewById(R.id.bottombar);
         mPreview = (ImageView)findViewById(R.id.preview_icon);
@@ -148,6 +182,8 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
         mCamera1 = (ImageView) findViewById(R.id.icon_camera_1);
         mCamera2 = (ImageView) findViewById(R.id.icon_camera_2);
 
+        mVideoPageBack = (ImageView) findViewById(R.id.video_back);
+        mSelectAll = findViewById(R.id.select_all);
     }
 
     private void setListener() {
@@ -157,7 +193,16 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
 
         mCamera1.setOnClickListener(mOnCameraClickListener);
         mCamera2.setOnClickListener(mOnCameraClickListener);
+
+        mVideoPageBack.setOnClickListener(mOnVideoBackClickListener);
     }
+
+    private View.OnClickListener mOnVideoBackClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            mViewPager.setCurrentItem(1, false);
+        }
+    };
 
     private View.OnClickListener mOnCameraClickListener = new View.OnClickListener() {
         @Override
@@ -214,7 +259,9 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     @Override
     public void onListFragmentInteraction(RecordingItem item) {
 
-        Log.i(TAG, "recording item clicked : " + item.name);
+        Log.i(TAG, "recording item clicked : " + item.getName());
+        mCurrentVideoItem = item;
+        mViewPager.setCurrentItem(3, false);
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -226,25 +273,32 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
     public void toggleMenu() {
         if (showMenu) {
             mBottomMenu.setVisibility(View.GONE);
-            mToolBarPreview.setVisibility(View.GONE);
+            if (mViewPager.getCurrentItem() == 0 ) {
+                mToolBarPreview.setVisibility(View.GONE);
+            }
+            else if (mViewPager.getCurrentItem() == 3) {
+                mToolBarRecordings.setVisibility(View.GONE);
+                VideoFragment frag = (VideoFragment)(mAdapter.getItem(mViewPager.getCurrentItem()));
+                frag.showVideoControl(false);
+            }
             mHandlerTime.removeCallbacks(HideUIControl);
         } else {
             mBottomMenu.setVisibility(View.VISIBLE);
-            mToolBarPreview.setVisibility(View.VISIBLE);
+            if (mViewPager.getCurrentItem() == 0 ) {
+                mToolBarPreview.setVisibility(View.VISIBLE);
+            } else if (mViewPager.getCurrentItem() == 3) {
+                mToolBarRecordings.setVisibility(View.VISIBLE);
+                VideoFragment frag = (VideoFragment)(mAdapter.getItem(mViewPager.getCurrentItem()));
+                frag.showVideoControl(true);
+            }
             mHandlerTime.postDelayed(HideUIControl, 1500);
         }
         showMenu = !showMenu;
     }
 
-    public void showSnackBar(String message, String action,  View.OnClickListener onSnackBarClickListener) {
-
-        Snackbar snack = Snackbar.make(findViewById(R.id.container), message, Snackbar.LENGTH_LONG);
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) snack.getView().getLayoutParams();
-        int bottomMargin = (showMenu) ? 56 : 0;
-        params.setMargins(0, 0, 0, bottomMargin);
-        snack.getView().setLayoutParams(params);
-        snack.setAction(action, onSnackBarClickListener);
-        //snack.show();
+    public void resetMenuTimer() {
+        mHandlerTime.removeCallbacks(HideUIControl);
+        mHandlerTime.postDelayed(HideUIControl, 1500);
     }
 
     private ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -265,11 +319,18 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
                 setDVRMode(Def.RECORDING_MODE);
             } else if (position == 1) {
                 mToolBarRecordings.setVisibility(View.VISIBLE);
+                mToolBarRecordings.findViewById(R.id.video_back).setVisibility(View.INVISIBLE);
                 mHandlerTime.removeCallbacks(HideUIControl);
+                mSelectAll.setVisibility(View.VISIBLE);
                 setDVRMode(Def.STORAGE_MODE);
             } else if (position == 2) {
                 mToolBarSetting.setVisibility(View.VISIBLE);
                 mHandlerTime.removeCallbacks(HideUIControl);
+
+            } else if (position == 3) {
+                mHandlerTime.postDelayed(HideUIControl,1500);
+                mToolBarRecordings.findViewById(R.id.video_back).setVisibility(View.VISIBLE);
+                mSelectAll.setVisibility(View.GONE);
             }
             mBottomMenu.setVisibility(View.VISIBLE);
 
@@ -300,6 +361,8 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
                 return ItemFragment.newInstance(10);
             } else if (position == 2) {
                 return SettingMainFragment.newInstance();
+            } else if (position == 3) {
+                return VideoFragment.newInstance("", "");
             }
             return null;
         }
@@ -312,6 +375,12 @@ public class MainActivity extends AppCompatActivity implements ItemFragment.OnLi
                 return getString(R.string.title_dashboard);
             } else if (position == 2) {
                 return getString(R.string.title_notifications);
+            } else if (position == 3) {
+                String title = mCurrentVideoItem.getName();
+                if (title == null) {
+                    title = "";
+                }
+                return title;
             }
             return super.getPageTitle(position);
         }

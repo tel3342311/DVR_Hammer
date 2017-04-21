@@ -67,7 +67,7 @@ public class SettingMainFragment extends Fragment {
     }
 
     private void findViews(View view) {
-        mViewPager = (ViewPager) view.findViewById(R.id.content);
+        mViewPager = (ViewPager) view.findViewById(R.id.video_date);
         mToolBar = (Toolbar) getActivity().findViewById(R.id.toolbar_setting);
         mCancel = (ImageView) mToolBar.findViewById(R.id.cancel_icon);
         mConfirm = (ImageView) mToolBar.findViewById(R.id.confirm_icon);

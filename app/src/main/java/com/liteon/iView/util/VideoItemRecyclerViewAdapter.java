@@ -31,8 +31,8 @@ public class VideoItemRecyclerViewAdapter extends RecyclerView.Adapter<VideoItem
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).name);
-        holder.mContentView.setText(mValues.get(position).time);
+        holder.mIdView.setText(mValues.get(position).getName());
+        holder.mContentView.setText(mValues.get(position).getTime());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,8 +60,8 @@ public class VideoItemRecyclerViewAdapter extends RecyclerView.Adapter<VideoItem
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mIdView = (TextView) view.findViewById(R.id.video_name);
+            mContentView = (TextView) view.findViewById(R.id.video_date);
         }
 
         @Override

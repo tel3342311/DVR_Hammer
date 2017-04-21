@@ -42,21 +42,13 @@ public class PreviewFragment extends Fragment {
     private String mParam2;
     private static PreviewFragment mFragment;
 
-
-    public void onSysModeChange(String mode) {
-        if (mode.equals(Def.RECORDING_MODE)) {
-            if (!mv.isStreaming()) {
-                new PreviewFragment.ReadDVR().execute(Def.DVR_PREVIEW_URL);
-            }
-
-        } else {
-            if (mv.isStreaming()) {
-                mv.stopPlayback();
-            }
-            ((MainActivity) getActivity()).showSnackBar("Please change DVR mode to continue.", "Change to Preview mode",mOnSnackBarClickListener);
+    public void onSystemReady() {
+        Log.d(TAG, "onSystemReady get!!");
+        if (mv.isStreaming()) {
+            mv.stopPlayback();
         }
+        new PreviewFragment.ReadDVR().execute(Def.DVR_PREVIEW_URL);
     }
-
     private View.OnClickListener mOnSnackBarClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -188,8 +180,6 @@ public class PreviewFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        checkDVRMode();
-        onSysModeChange(Def.RECORDING_MODE);
         resumeVideo();
         Log.d(TAG, "onResume called");
     }
@@ -207,12 +197,15 @@ public class PreviewFragment extends Fragment {
         if (mv != null) {
             mv.freeCameraMemory();
         }
+        Log.d(TAG, "onDestroy called");
     }
 
 
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.d(TAG, "onDetach called");
+
     }
 
     public class ReadDVR extends AsyncTask<String, Void, MjpegInputStream> {
